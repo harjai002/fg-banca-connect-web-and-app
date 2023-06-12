@@ -1,0 +1,158 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <div>
+        <ion-back-button defaultHref="/" mode="md"></ion-back-button>
+      </div>
+    </ion-buttons>
+    <ion-buttons [hidden]="true" slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title class="bold">{{titleMsg}}</ion-title>
+    <ion-icon class="filter-icon" hidden="true" (click)="filterOpen()" slot="end" name="funnel-outline"></ion-icon>
+  </ion-toolbar>
+  <ion-card class="mar-0" *ngIf="openFilter">
+    <ion-card-content>
+      <ion-icon (click)="filterOpen()" style="float: right;font-size: 18px;" color="danger" name="close-circle-outline">
+      </ion-icon>
+      <form [formGroup]="managerForm">
+        <ion-row>
+          <ion-col size="12" class="pad-0">
+            <ion-label class="form-lbl bold clr-black" position="floating">Select Zone <span class="error"
+                *ngIf="(managerForm.controls.zone.touched || submitted) && managerForm.controls.zone.errors?.required">
+                *</span></ion-label>
+            <ion-select formControlName="zone" (ionChange)="chngeZone($event)" mode="ios" placeholder="Select Zone"
+              [multiple]="true">
+              <ion-select-option *ngFor="let z of zoneData" value="{{z.zone}}">{{z.zone}}</ion-select-option>
+            </ion-select>
+          </ion-col>
+        </ion-row>
+      </form>
+    </ion-card-content>
+    <ion-badge style="float: right;padding: 6px;margin:6px;" (click)="clearManagerFilter()" color="danger">Clear Filter
+    </ion-badge>&nbsp;
+  </ion-card>
+</ion-header>
+<ion-content>
+
+  <!-- <ion-card class="mar-0" *ngIf="openFilter">
+    <ion-card-content>
+      <ion-icon (click)="filterOpen()" style="float: right;font-size: 18px;" color="danger" name="close-circle-outline">
+      </ion-icon>
+      <form [formGroup]="managerForm">
+        <ion-row>
+          <ion-col size="12" class="pad-0">
+            <ion-label class="form-lbl bold clr-black" position="floating">Select Zone <span class="error"
+                *ngIf="(managerForm.controls.zone.touched || submitted) && managerForm.controls.zone.errors?.required">
+                *</span></ion-label>
+            <ion-select formControlName="zone" (ionChange)="chngeZone($event)" mode="ios" placeholder="Select Zone"
+              [multiple]="true">
+              <ion-select-option value="East">East</ion-select-option>
+              <ion-select-option value="West">West</ion-select-option>
+              <ion-select-option value="North">North</ion-select-option>
+              <ion-select-option value="South">South</ion-select-option>
+              <ion-select-option value="Central">Central</ion-select-option>
+            </ion-select>
+          </ion-col>
+        </ion-row>
+      </form>
+    </ion-card-content>
+    <ion-badge style="float: right;padding: 6px;margin:6px;" (click)="clearManagerFilter()" color="danger">Clear Filter
+    </ion-badge>&nbsp;
+  </ion-card> -->
+
+  <ion-grid>
+    <!-- <ion-accordion-group>
+      <ion-accordion class="faq-list" *ngFor="let item of teamsData;let i=index" (click)="getCounts(item.EmpCode)"
+        value="{{i+1}}">
+        <ion-item slot="header" >
+          <div>
+            <ion-row>
+              <ion-col size="12">
+                <ion-label class="list-lbl bold">{{i+1}}. {{item.EmployeeName}}</ion-label>
+                <ion-label class="list-lbl" style=" font-size:11px; "><span>Dsr Count : {{dsrCount}}</span> |
+                  <span>Total premium : {{totalPremium}}</span>
+                </ion-label>
+              </ion-col>
+            </ion-row>
+          </div>
+        </ion-item>
+        <div class="faq-list-data" slot="content">
+          <table>
+            <tr>
+              <th>Activities</th>
+              <th>{{yesturdayDate | date }}</th>
+              <th>
+                Current Month till<br>
+                {{yesturdayDate | date }}
+              </th>
+            </tr>
+            <tr *ngFor="let item of typeOfActivityData">
+              <td class="tbl-lbl">{{item.type}}</td>
+              <td>{{item.count}}</td>
+              <td>{{item.mnthCount}}</td>
+            </tr>
+            <tr>
+              <th>Total </th>
+              <th>{{yesturdayCount}}</th>
+              <th>{{monthCount}}</th>
+            </tr>
+
+          </table>
+        </div>
+      </ion-accordion>
+    </ion-accordion-group> -->
+
+
+    <table>
+      <thead>
+        <tr>
+          <th class="th-label">Activities</th>
+          <th class="th-label">{{yesturdayDate | date }}</th>
+          <th class="th-label"> Current Month till<br>
+            {{yesturdayDate | date }}
+          </th>
+        </tr>
+      </thead>
+      <tr *ngFor="let item of typeOfActivityData">
+        <td class="tbl-lbl">{{item.type | titlecase}}</td>
+        <td>{{item.count}}</td>
+        <td>{{item.mnthCount}}</td>
+      </tr>
+      <tr>
+        <th>Total</th>
+        <th>{{yesturdayCount}}</th>
+        <th>{{monthCount}}</th>
+
+      </tr>
+
+    </table>
+
+
+  </ion-grid>
+
+
+  <!-- if dsr avtivity is empty  -->
+
+  <div *ngIf="teamsData.length<=0">
+    <img class="center empty-img" src="./assets/New/empty.svg">
+    <h3 class="recordfound">No Record Found !</h3>
+  </div>
+
+
+
+</ion-content> 
+  <ion-footer>
+    <ion-toolbar>
+
+      <ion-row>
+        <!-- <ion-col size="9">
+          <ion-title style="font-size:13px">Total Premium Collected Inclusing GST Sum :</ion-title>
+        </ion-col> -->
+        <ion-col size="12">
+          <p class="center" style="font-size:15px;color: white;margin: 0;"><b>Total Premium {{totalPremium ? (totalPremium |currency: 'INR':'symbol':'1.0-0'):0}}</b></p>
+        </ion-col>
+      </ion-row>
+    </ion-toolbar>
+  </ion-footer>
+ 

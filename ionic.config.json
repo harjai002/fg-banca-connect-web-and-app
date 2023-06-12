@@ -1,0 +1,7 @@
+{
+  "name": "newbapisapp",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

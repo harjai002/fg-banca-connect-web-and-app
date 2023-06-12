@@ -1,0 +1,94 @@
+<ion-app>
+  <ion-split-pane contentId="main-content">
+    <ion-menu contentId="main-content" side="start" class="menuContainer">
+      <ion-content>
+        <!-- <ion-list class="menu-list"> -->
+        <ion-list id="inbox-list">
+
+          <ion-row>
+            <ion-col size="10" size-md="12" size-lg="12">
+              <img class="fgi-logo center" routerLink="/home" src="./assets/New/fgi.png" alt="">
+            </ion-col>
+            <ion-col size="2" size-md="0" size-lg="0">
+              <ion-icon (click)="close()" class="sidemenu-close-btn" [ios]="'close'" [md]="'close'"
+                style="font-size: 24px;color:white">
+              </ion-icon>
+            </ion-col>
+          </ion-row>
+
+          <ion-list-header [ngStyle]="{'color':'white'}">&nbsp;<span class="center">Hi
+              {{userName}}</span></ion-list-header>
+          <ion-note [ngStyle]="{'color':'white'}">&nbsp; {{userEmail}}</ion-note><br>
+          <ion-menu-toggle auto-hide="false" *ngFor="let page of appPages; let i=index" class="menuWrapper">
+            <ion-item class="label" (click)="goToHome(page)" [ngClass]="{'active': i==0}">
+              <ion-icon slot="start" [ios]="page.icon + '-outline'" [md]="page.icon + '-outline'"
+                [ngStyle]="{'color':'white'}"></ion-icon>
+              <span class="bold" [ngStyle]="{'color':'white'}">{{page.title}}</span>
+            </ion-item>
+          </ion-menu-toggle>
+
+          <ion-menu-toggle auto-hide="false" class="menuWrapper">
+            <ion-item class="label" routerLink="/home">
+              <ion-icon slot="start" name="home" [ngStyle]="{'color':'white'}"></ion-icon>
+              <span class="bold" [ngStyle]="{'color':'white'}">Home</span>
+            </ion-item>
+          </ion-menu-toggle>
+
+          <ion-menu-toggle auto-hide="false" class="menuWrapper">
+            <ion-item *ngIf="userFlag > 1" class="label" routerLink="/dashboard">
+              <ion-icon slot="start" name="apps" [ngStyle]="{'color':'white'}"></ion-icon>
+              <span class="bold" [ngStyle]="{'color':'white'}">Dashboard</span>
+            </ion-item>
+          </ion-menu-toggle>
+          <!-- <ion-menu-toggle auto-hide="false" class="menuWrapper">
+          <ion-item *ngIf="userFlag < 2" class="label" routerLink="/dsrActivity">
+            <ion-icon slot="start" name="add-circle" [ngStyle]="{'color':'white'}"></ion-icon>
+            <span class="bold" [ngStyle]="{'color':'white'}">DSR Activity</span>
+          </ion-item>
+        </ion-menu-toggle> -->
+          <ion-menu-toggle auto-hide="false" class="menuWrapper">
+            <ion-item *ngIf="userFlag > 1" class="label" routerLink="/teamsDemo:id">
+              <ion-icon slot="start" name="people" [ngStyle]="{'color':'white'}"></ion-icon>
+              <span class="bold" [ngStyle]="{'color':'white'}">Teams Activity</span>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false" class="menuWrapper">
+            <ion-item *ngIf="userFlag > 1" class="label" routerLink="/report">
+              <ion-icon slot="start" name="document-text" [ngStyle]="{'color':'white'}"></ion-icon>
+              <span class="bold" [ngStyle]="{'color':'white'}">Reports</span>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-item class="label pointer" (click)="logout()">
+            <ion-icon slot="start" name="power" [ngStyle]="{'color':'white'}"></ion-icon>
+            <span class="bold" [ngStyle]="{'color':'white'}">Logout</span>
+          </ion-item>
+        </ion-list>
+
+      </ion-content>
+      <!-- <ion-footer collapse="fade" class="footer">
+        <ion-toolbar style="border-top: 1px solid white;">
+          <ion-title style="font-size: 12px;">
+            <span class="version">Version {{ appVersionNumber}}</span>
+          </ion-title>
+        </ion-toolbar>
+      </ion-footer> -->
+
+    </ion-menu>
+    <ion-router-outlet id="main-content" main> </ion-router-outlet>
+  </ion-split-pane>
+
+</ion-app>
+
+ 
+
+<div *ngIf="loaderStatus===true" class="loader">
+  <div class="loader-element">
+      <ion-spinner class="spinner" name="lines"> </ion-spinner>
+      <p>Please Wait...</p>
+  </div>
+</div>
+
+
+<ng-container *ngIf="newVersionAvailable">
+  <div (parentFun)="updateClient()" [popuptype]="'app-update'"></div>
+</ng-container>

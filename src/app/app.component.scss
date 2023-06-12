@@ -1,0 +1,262 @@
+ion-menu ion-content {
+  --background: var(--ion-item-background, var(--ion-background-color, #fff));
+}
+
+ion-menu.md ion-content {
+  --padding-start: 8px;
+  --padding-end: 8px;
+  --padding-top: 20px;
+  --padding-bottom: 20px;
+}
+
+
+ion-menu.md ion-note {
+  margin-bottom: 30px;
+}
+
+ion-menu.md ion-list-header,
+ion-menu.md ion-note {
+  padding-left: 10px;
+}
+
+// ion-menu.md ion-list#inbox-list {
+//   border-bottom: 1px solid var(--ion-color-step-150, #d7d8da);
+// }
+
+ion-menu.md ion-list#inbox-list ion-list-header {
+  font-size: 18px;
+  font-weight: 600;
+  min-height: 20px;
+}
+
+ion-menu.md ion-list#labels-list ion-list-header {
+  font-size: 16px;
+  margin-bottom: 18px;
+  color: #757575;
+  min-height: 26px;
+}
+
+ion-menu.md ion-item {
+  --padding-start: 10px;
+  --padding-end: 10px;
+  border-radius: 4px;
+}
+
+ion-menu.md ion-item.selected {
+  --background: rgba(var(--ion-color-primary-rgb), 0.14);
+}
+
+ion-menu.md ion-item.selected ion-icon {
+  color: var(--ion-color-primary);
+}
+
+ion-menu.md ion-item ion-icon {
+  color: #616e7e;
+}
+
+ion-menu.md ion-item ion-label {
+  font-weight: 500;
+}
+
+ion-menu.ios ion-content {
+  --padding-bottom: 20px;
+}
+
+ion-menu.ios ion-list {
+  padding: 20px 0 0 0;
+}
+
+ion-menu.ios ion-note {
+  line-height: 24px;
+  margin-bottom: 20px;
+}
+
+ion-menu.ios ion-item {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --min-height: 50px;
+}
+
+ion-menu.ios ion-item.selected ion-icon {
+  color: var(--ion-color-primary);
+}
+
+ion-menu.ios ion-item ion-icon {
+  font-size: 24px;
+  color: #73849a;
+}
+
+ion-menu.ios ion-list#labels-list ion-list-header {
+  margin-bottom: 8px;
+}
+
+ion-menu.ios ion-list-header,
+ion-menu.ios ion-note {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+ion-menu.ios ion-note {
+  margin-bottom: 8px;
+}
+
+ion-note {
+  display: inline-block;
+  font-size: 12px;
+
+  color: var(--ion-color-medium-shade);
+}
+
+ion-item.selected {
+  --color: var(--ion-color-primary);
+}
+
+.username {
+  font-size: 1.2rem;
+  color: var(--white-clr);
+  margin-left: 8%;
+}
+
+
+
+
+
+
+
+
+
+
+.icon-style {
+  color: #ffff;
+  font-size: 1rem;
+}
+
+.menu-close-icon {
+  margin: -1rem 0px -1rem -30px;
+  background: transparent;
+}
+
+
+.menu-list {
+  height: 100%;
+
+  .label {
+    color: white;
+    padding: 2px 10px 2px 13px;
+  }
+
+  .menuWrapper {
+    .label {
+      border-bottom: 1px solid #f32712;
+    }
+
+    &:last-child {
+      .label {
+        border-bottom: 1px solid #ff6758;
+      }
+    }
+
+    .active {
+      background-color: #f31f1f;
+    }
+  }
+}
+
+.menu-title {
+  color: #ffff;
+  padding: 0px 110px 1px 0;
+}
+
+.age-is-ten {
+  background: #2b9348;
+}
+
+.my-custom-class {
+  --background: var(--main-bg-color) !important;
+}
+
+button {
+  outline: none;
+  box-shadow: none;
+}
+
+.header-md::after {
+  background: none;
+}
+
+ion-item {
+  --border-color: transparent;
+}
+
+ion-menu ion-content {
+  --background: var(--main-bg-color) !important;
+}
+
+ion-menu ion-list {
+  background: var(--main-bg-color) !important;
+}
+
+ion-menu ion-list ion-item {
+  --background: var(--main-bg-color) !important;
+}
+
+.footer {
+  --background: var(--main-bg-color) !important;
+}
+
+
+.progress-outer {
+  width: 96%;
+  margin: 10px 2%;
+  padding: 3px;
+  text-align: center;
+  background-color: #f4f4f4;
+  border: 1px solid #dcdcdc;
+  color: #fff;
+  border-radius: 20px;
+}
+
+.progress-inner {
+  min-width: 15%;
+  white-space: nowrap;
+  overflow: hidden;
+  padding: 5px;
+  border-radius: 20px;
+  background-color: #16A1A4;
+}
+
+
+
+.loader {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  background: rgb(0 0 0 / 29%);
+  display: inline-block;
+  z-index: 99;
+  text-align: center;
+  position: absolute;
+}
+
+.loader-element {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.loader p {
+  padding: 0;
+  margin: 0;
+  color: white;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.spinner {
+  color: white;
+  padding: 12px;
+  font-size: 14px;
+}

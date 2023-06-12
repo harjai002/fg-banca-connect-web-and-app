@@ -1,0 +1,7 @@
+<ion-row class="fix-searchbar">
+  <ion-col class="pad-0">
+    <ion-searchbar class="pad-0" [ngModel]="name" (ngModelChange)="name=$event"  placeholder="{{serchPlaceholder}}">
+    </ion-searchbar>
+    <p>{{name}}</p>
+  </ion-col>
+</ion-row>

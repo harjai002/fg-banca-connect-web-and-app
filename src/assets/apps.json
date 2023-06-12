@@ -1,0 +1,202 @@
+{
+    "buy": [
+        {
+            "image": "assets/icon/iinsure.png",
+            "appname": "I Insure",
+            "ItemCode": "pa001",
+            "link": "iinsure://futuregenerali.com/verify/?"
+        },  
+        {
+            "image": "assets/icon/preinspection.png",
+            "ItemCode": "pa003",
+            "appname": "AVO Inspection",
+            "link": "com.future.generali"
+        },
+        {
+            "image": "assets/icon/quickpay.png",
+            "appname": "Quick Pay",
+            "ItemCode": "pa004",
+            "link": "https://general.futuregenerali.in/Quickpay/QuickPayNowAgent.aspx"
+        },
+        {
+            "image": "assets/icon/lossRatio.png",
+            "appname": "Loss Ratio",
+            "ItemCode": "pa005",
+            "link": "app"
+        },
+        {
+            "image": "assets/icon/performance.png",
+            "appname": "My Performance",
+            "ItemCode": "pa014",
+            "link": "app"
+        },
+        {
+            "image": "assets/icon/target2.png",
+            "appname": "Targets v/s Achievements",
+            "ItemCode": "pa015",
+            "link": "https://online.futuregenerali.in/setTarget/web/#/validate?q="
+        },{
+            "image": "assets/icon/winner.png",
+            "appname": "Winners Edge",
+            "ItemCode": "pa015",
+            "link": "https://app.fggeneral.in/RnRDashBoard/web/#/validate?q="
+        },{
+            "image": "assets/icon/send-sms.png",
+            "appname": "Send SMS",
+            "ItemCode": "pa010",
+            "link": "app"
+        },{
+            "image": "assets/icon/performance.png",
+            "appname": "Portfolio",
+            "ItemCode": "pa019",
+            "link": "https://online.futuregenerali.in/singleCustomerView"
+        }
+    ],
+    "quicklinks": [
+        {
+            "image": "assets/icon/e-proposal.png",
+            "appname": "E-Proposal",
+            "ItemCode": "pa006",
+            "link": "https://app.fggeneral.in/eProposal/web/#/chkToken?q="
+        },    
+        {
+            "image": "assets/icon/uco.png",
+            "appname": "FG BAPIS",
+            "ItemCode": "pa022",
+            "link": "http://online.futuregenerali.in/UCO/web/#/chkToken?q="
+        },    
+        {
+            "image": "assets/icon/performance.png",
+            "appname": "My Points/Rewards",
+            "ItemCode": "pa018",
+            "link": "app"
+        },    
+        {
+            "image": "assets/icon/internalchat.png",
+            "appname": "FG Internal Chat",
+            "ItemCode": "pa002",
+            "link": "https://chat.fgii-chat.com/signup_email?id="
+        },
+        {
+            "image": "assets/icon/fg-inspection.png",
+            "appname": "Fg Cattle Inspection",
+            "ItemCode": "pa016",            
+            "link": "app"
+        },       
+        {
+            "image": "assets/icon/rollover.png",
+            "appname": "Rollover",
+            "ItemCode": "pa007",
+            "link": "https://app.fggeneral.in/FGRenewal/web/#/varify?q="
+        },
+        {
+            "image": "assets/icon/rollover.png",
+            "appname": "Insurance premium financing",
+            "ItemCode": "pa020",
+            "link": "https://www.finsall.co.in/portal/#/executive/login"
+        },
+        {
+            "image": "assets/icon/policy-documents.png",
+            "appname": "Policy Document",
+            "ItemCode": "pa011",
+            "link": "app"
+        },
+        {   
+            "image": "assets/icon/complaints.png",
+            "appname": "Complaints",
+            "ItemCode": "pa008",
+            "link": "app"
+        },
+        {
+            "image": "assets/icon/policy-status.png",
+            "appname": "Policy Status",
+            "ItemCode": "pa009",
+            "link": "app"
+        },
+        {
+            "image": "assets/icon/ask-it.png",
+            "appname": "Ask It",
+            "ItemCode": "pa013",
+            "link": "https://askit.futuregenerali.in/askit/web/#/verifyAuth?q="
+        },  
+        {   
+            "image": "assets/icon/locator.png",
+            "appname": "Locators",
+            "ItemCode": "pa017",
+            "link": "",
+            "locators" :[{
+                "image": "assets/icon/gLocator.png",
+                "appname": "Garage Locator",
+                "link": "https://general.futuregenerali.in/car-insurance/garage-locator"
+            },
+            {
+                "image": "assets/icon/networkhospitals.png",
+                "appname": "Network Hospitals",
+                "link": "https://general.futuregenerali.in/network-hospitals"
+            },
+            {
+                "image": "assets/icon/diagnosticenter.png",
+                "appname": "Diagnostic centres",
+                "link": "https://general.futuregenerali.in/diagnostic-centres"
+            },
+            {
+                "image": "assets/icon/branchLocator.png",
+                "appname": "Branch Locator",
+                "link": "https://general.futuregenerali.in/branch-locator"
+            }]
+        },
+        {   "image": "assets/icon/more-products.png",
+            "appname": "More Products",
+            "ItemCode": "pa012",
+            "link":"",
+            "products": [
+                {
+                    "image": "assets/icon/motor.png",
+                    "appname": "Motor",
+                    "link": "https://general.futuregenerali.in/forms-and-downloads?form=brochures&product=motor"
+                },
+                {
+                    "image": "assets/icon/health.png",
+                    "appname": "Health",
+                    "link": " https://general.futuregenerali.in/forms-and-downloads?form=brochures&product=health"
+                },
+                {
+                    "image": "assets/icon/travel.png",
+                    "appname": "Travel",
+                    "link": " https://general.futuregenerali.in/forms-and-downloads?form=brochures&product=travel"
+                },
+                {
+                    "image": "assets/icon/home.png",
+                    "appname": "Home",
+                    "link": "https://general.futuregenerali.in/forms-and-downloads?form=brochures&product=home"
+                },
+                {
+                    "image": "assets/icon/rural.png",
+                    "appname": "Social/Rural",
+                    "link": "https://general.futuregenerali.in/forms-and-downloads?form=brochures&product=social_rural"
+                },
+                {
+                    "image": "assets/icon/group-health.png",
+                    "appname": "Group Health",
+                    "link": "https://general.futuregenerali.in/forms-and-downloads?form=brochures&product=group-health%20products"
+                }
+            ]
+        }
+        
+
+    ],
+    "claims":[
+        {
+            "image": "assets/icon/claim.png",
+            "appname": "Claim Registration",
+            "ItemCode": "pa015",
+            "link": "https://qms.futuregenerali.in/FGClaimWsAPI/web/#/verify?q="
+        }
+    ],
+    "whatsapp" : {
+        "image": "assets/icon/whatsapp.png",
+        "appname": "Whatsapp",
+        "ItemCode": "pa023",
+        "link": "com.whatsapp"
+    }
+}

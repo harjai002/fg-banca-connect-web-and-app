@@ -1,0 +1,360 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <div>
+        <ion-back-button defaultHref="/" mode="md"></ion-back-button>
+      </div>
+    </ion-buttons>
+    <ion-buttons [hidden]="true" slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title class="bold">{{titleMsg}} [{{filterData.length}}]</ion-title>
+    <ion-icon class="filter-icon" (click)="filterOpen()" slot="end" name="funnel-outline"></ion-icon>
+    <ion-icon class="add-icon" slot="end" (click)="searchIcon()" name="search-outline"></ion-icon>
+    <!-- <ion-icon class="filter-icon download-btn" (click)="excelExport('excel-table')" [hidden]="filterData.length == 0"
+      slot="end" name="download-outline"></ion-icon> -->
+  </ion-toolbar>
+
+  <ion-row *ngIf="searchBar" class="fix-searchbar">
+    <ion-col class="pad-0">
+      <ion-searchbar [(ngModel)]="filterSearch" autofocus="true" animated="true" color="light" class="pad-0"
+        placeholder="search here">
+      </ion-searchbar>
+    </ion-col>
+    <!-- <ion-col size="2" class="pad-0">
+      <ion-icon class="filter-icon" (click)="searchIcon()" name="close-outline"></ion-icon>
+    </ion-col> -->
+  </ion-row>
+  <!-- filter start here -->
+  <ion-grid *ngIf="openFilter" style="background:white">
+    <ion-segment value="manager" [scrollable]="true" color="danger" (ionChange)="segmentChanged($event)">
+      <ion-segment-button [hidden]="userFlag<=1" value="manager">
+        <ion-label>Manager</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="zone">
+        <ion-label>Zone</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="bank">
+        <ion-label>Bank</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="activity">
+        <ion-label>Activity</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="date">
+        <ion-label>Date</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+    <div [hidden]="userFlag<=1">
+      <div *ngIf="segmentValue == 'manager'">
+        <ion-card class="mar-0">
+          <ion-card-content>
+            <ion-icon (click)="filterOpen()" style="float: right;font-size: 18px;" color="danger"
+              name="close-circle-outline"></ion-icon>
+            <form [formGroup]="managerForm">
+              <ion-row>
+                <ion-col size="12" class="pad-0">
+                  <ion-label class="form-lbl bold clr-black" position="floating">Select Zone <span class="error"
+                      *ngIf="(managerForm.controls.zone.touched || submitted) && managerForm.controls.zone.errors?.required">
+                      *</span></ion-label>
+                  <ion-select formControlName="zone" (ionChange)="chngeZone($event)" mode="ios"
+                    placeholder="Select Zone" [multiple]="true">
+                    <!-- <ion-select formControlName="zone"  mode="ios" placeholder="Select Zone" [multiple]="true"> -->
+                    <ion-select-option *ngFor="let z of zoneData" value="{{z.zone}}">{{z.zone}}</ion-select-option>
+                  </ion-select>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="12" class="pad-0">
+                  <ion-label class="form-lbl bold clr-black" position="floating">Select Manager <span class="error"
+                      *ngIf="(managerForm.controls.manager.touched || submitted) && managerForm.controls.manager.errors?.required">
+                      *  <span class="error2"  *ngIf="showmangerDrop">Manager Data Not Found</span></span>
+                     
+                    </ion-label>
+                    <ion-select *ngIf="managerData" [disabled]="managerForm.controls.zone.invalid" formControlName="manager"
+                      (ionChange)="chngeManagers($event)" placeholder="Select Manager" [multiple]="true" mode="ios">
+                     <ion-select-option value="{{item.id}}" *ngFor="let item of managerData">{{item.name | titlecase }}
+                     </ion-select-option>
+                    </ion-select>
+                </ion-col>
+              </ion-row>
+            </form>
+          </ion-card-content>
+          <!-- <ion-badge style="float: right;padding: 6px;margin: 6px;" (click)="clearManagerFilter()" color="danger">Clear
+          Filter</ion-badge> -->
+
+        </ion-card>
+        <ion-row>
+          <ion-col size="6">
+            <ion-label (click)="closeFilter()" style="margin: 1% 0% 1% 0%;" class="fltr-btn center">Close</ion-label>
+          </ion-col>
+          <ion-col size="6">
+            <ion-label (click)="clearManagerFilter()" style="margin: 1% 0% 1% 0%;" class="fltr-btn center">Clear
+              Filter</ion-label>
+          </ion-col>
+        </ion-row>
+      </div>
+    </div>
+
+
+    <div
+      *ngIf="segmentValue == 'zone' || segmentValue == 'bank' || segmentValue == 'activity' || segmentValue == 'date' ">
+      <form [formGroup]="filterForm">
+        <ion-card class="mar-0" *ngIf="segmentValue == 'zone'">
+          <ion-card-content>
+            <ion-row>
+              <ion-col size="12" class="pad-0">
+                <ion-label class="form-lbl bold clr-black" position="floating">Select Zone</ion-label>
+                <!-- <ion-select formControlName="zone" (ionChange)="chngeZone($event)" mode="ios" placeholder="Select Zone" [multiple]="true"> -->
+                <ion-select formControlName="zone" mode="ios" placeholder="Select Zone" [multiple]="true">
+                  <ion-select-option *ngFor="let z of zoneData" value="{{z.zone}}">{{z.zone}}</ion-select-option>
+                </ion-select>
+              </ion-col>
+            </ion-row>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-card class="mar-0" *ngIf="segmentValue == 'bank'">
+          <ion-card-content>
+            <ion-row>
+              <ion-col size="12" class="pad-0">
+                <ion-item>
+                  <ion-label class="clr-black">Bank Name</ion-label>
+                  <!-- itemValueField="id" -->
+                  <ionic-selectable formControlName="bank" item-content [(ngModel)]="bank" [items]="banks"
+                    itemTextField="bank_Name" [canSearch]="true" [canClear]="true" [isMultiple]="true"
+                    [hasVirtualScroll]="true" [hasInfiniteScroll]="true" [shouldFocusSearchbar]="false">
+                  </ionic-selectable>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-card class="mar-0" *ngIf="segmentValue == 'activity'">
+          <ion-card-content>
+            <ion-row>
+              <ion-col size="12" class="pad-0">
+                <ion-label class="form-lbl bold clr-black" position="floating">Select activity</ion-label>
+                <ion-select formControlName="activity" placeholder="Plz Select Type of Activity" [multiple]="true"
+                  mode="ios">
+                  <div>
+                    <ion-select-option value="Bank Branch visit">Bank Branch visit</ion-select-option>
+                    <ion-select-option value="Bank Zonal office">Bank Zonal office</ion-select-option>
+                    <ion-select-option value="Bank Regional office">Bank Regional office</ion-select-option>
+                    <ion-select-option value="Customer service">Customer service</ion-select-option>
+                    <ion-select-option value="Promotional activity">Promotional activity</ion-select-option>
+                    <ion-select-option value="Joint call with supevisor">Joint call with supevisor</ion-select-option>
+                    <ion-select-option value="Review/Office Meeting">Review/Office meeting</ion-select-option>
+                    <ion-select-option value="Corporate salary">Corporate salary</ion-select-option>
+                    <ion-select-option value="Policy Issuance/Other Back office work">Policy issuance/Other Back office
+                      work</ion-select-option>
+                  </div>
+                </ion-select>
+              </ion-col>
+            </ion-row>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-card class="mar-0" *ngIf="segmentValue == 'date'">
+          <ion-card-content>
+            <ion-row>
+              <ion-col size="6" class="pad-0">
+                <ion-label class="form-lbl bold clr-black" position="floating">Start Date</ion-label>
+                <!-- <ion-icon class="calander-icon " name="calendar-outline"></ion-icon> -->
+                <ion-input class="calander-input" formControlName="startDate" type="date"></ion-input>
+    
+              </ion-col>
+              <ion-col size="6" class="pad-0">
+                <ion-label class="form-lbl bold clr-black" position="floating">End Date</ion-label>
+                <!-- <ion-icon class="calander-icon " name="calendar-outline"></ion-icon> -->
+                <ion-input class="calander-input" formControlName="endDate" type="date"></ion-input>
+              </ion-col>
+            </ion-row>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-row>
+          <ion-col size="4" class="pad-0">
+            <ion-label (click)="filterOpen()" style="margin: 3% 0% 2% 0%;" class="fltr-btn center">Close</ion-label>
+          </ion-col>
+          <ion-col size="4" class="pad-0">
+            <ion-label [disabled]="true" (click)="clearFilterForm()" style="margin: 3% 0% 2% 0%;"
+              class="fltr-btn center">Clear</ion-label>
+          </ion-col>
+          <ion-col size="4" class="pad-0">
+            <ion-label [disabled]="true" (click)="applyFilters()" style="margin: 3% 0% 2% 0%;"
+              class="fltr-btn center">Apply</ion-label>
+
+          </ion-col>
+        </ion-row>
+      </form>
+    </div>
+
+  </ion-grid>
+  <!-- filter end here -->
+
+</ion-header>
+<ion-content>
+
+
+  <ion-grid *ngIf="dsrDetails">
+    <ion-accordion-group>
+      <ion-accordion class="faq-list" *ngFor="let item of filterData | filterdata:filterSearch; let i=index"
+        value="{{i}}">
+        <ion-item slot="header">
+          <ion-row>
+            <ion-col size="12">
+              <ion-label class="list-lbl">{{item.type_Of_Activity | titlecase}}</ion-label>
+              <ion-label class="list-date">{{item.date_Of_Visit | date: 'dd/MM/yyyy'}} | <span>
+                  {{item.zone}} | {{item.bank_Name | titlecase}}</span>
+              </ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-item>
+        <div class="faq-list-data" slot="content">
+          <table>
+            <tr>
+              <td class="tbl-lbl">Executive</td>
+              <td>{{item.executive | titlecase}}</td>
+            </tr>
+            <tr>
+              <td>Team Leader</td>
+              <td>{{item.team_Leader | titlecase}}</td>
+            </tr>
+            <tr>
+              <td>Date of visit</td>
+              <td>{{item.date_Of_Visit | date: 'dd/MM/yyyy'}}</td>
+            </tr>
+            <tr>
+              <td>Start Date</td>
+              <td>{{item.start_Time}}</td>
+            </tr>
+            <tr>
+              <td>End Date</td>
+              <td>{{item.end_Time}}</td>
+            </tr>
+            <tr>
+              <td>Duration</td>
+              <td>{{item.duration}} Hour</td>
+            </tr>
+            <tr>
+              <td>Type of Activity</td>
+              <td>{{item.type_Of_Activity}}</td>
+            </tr>
+            <ng-container *ngIf="item?.subTypeOfActivity.length > 0">
+              <tr *ngFor="let subItem of item?.subTypeOfActivity">
+                <td>
+                  <ul class="sub_activity">
+                    <li>Sub Type of Activity</li>
+                    <li>Start Time</li>
+                    <li>End Time</li>
+                    <li>Duration</li>
+                    <li>Premium Collected Including GST</li>
+                  </ul>
+                </td>
+                <td>
+                  <ul class="sub_activity">
+                    <li>{{subItem?.subTypeOfActivity}}</li>
+                    <li>{{subItem?.subStartTime}}</li>
+                    <li>{{subItem?.subEndTime}}</li>
+                    <li>{{subItem?.subDuration}}</li>
+                    <li>{{subItem?.premium_Collected ? (subItem?.premium_Collected |currency:
+                      'INR':'symbol':'1.0-0'):0}}</li>
+                  </ul>
+                </td>
+              </tr>
+            </ng-container>
+            <tr>
+              <td>Bank Name</td>
+              <td>{{item.bank_Name | titlecase}}</td>
+            </tr>
+            <tr>
+              <td>Branch Code</td>
+              <td>{{item.branch_Code}}</td>
+            </tr>
+            <tr>
+              <td>Bank Branch name</td>
+              <td>{{item.bank_Branch_Name | titlecase}}</td>
+            </tr>
+            <tr>
+              <td>Person Meet</td>
+              <td>{{item.to_Whom_Meet | titlecase}}</td>
+            </tr>
+            <tr>
+              <td>Contact Number</td>
+              <td>{{item.to_Whom_Meet_Number}}</td>
+            </tr>
+            <tr>
+              <td>Other Remark Comments</td>
+              <td>{{item.remark_Comments | titlecase}}</td>
+            </tr>
+          </table>
+        </div>
+      </ion-accordion>
+    </ion-accordion-group>
+  </ion-grid>
+
+  <!-- if dsr avtivity is empty  -->
+
+  <div *ngIf="filterData.length<=0">
+    <img class="center empty-img" src="./assets/New/empty.svg">
+    <h3 class="recordfound">No Record Found !</h3>
+  </div>
+
+
+  <!-- This code only for download excel , start here -->
+  <div id="excel-table" style="display: none;">
+    <tr>
+      <th>Executive</th>
+      <th>Team Leader</th>
+      <th>Date of visit</th>
+      <th>Start Time</th>
+      <th>End Time</th>
+      <th>Duration</th>
+      <th>Type of Activity</th>
+      <ul class="sub_activity">
+        <li>Sub Type of Activity</li>
+        <li>Start Time</li>
+        <li>End Time</li>
+        <li>Duration</li>
+        <li>Premium Collected Inclusing GST</li>
+      </ul>
+      <th>Bank Name</th>
+      <th>Branch Code</th>
+      <th>Bank Branch name</th>
+      <th>Person Meet</th>
+      <th>Contact Number</th>
+      <th>Other Remark Comments</th>
+    </tr>
+    <table *ngFor="let item of filterData; let i=index">
+      <tr>
+        <td>{{item.executive}}</td>
+        <td>{{item.team_Leader}}</td>
+        <td>{{item.date_Of_Visit}}</td>
+        <td>{{item.start_Time}}</td>
+        <td>{{item.end_Time}}</td>
+        <td>{{item.duration}}</td>
+        <td>{{item.type_Of_Activity}}</td>
+
+        <td *ngFor="let subItem of item.subTypeOfActivity">
+          <ul class="sub_activity">
+            <li>{{subItem.subTypeOfActivity}}</li>
+            <li>{{subItem.subStartTime}}</li>
+            <li>{{subItem.subEndTime}}</li>
+            <li>{{subItem.subDuration}}</li>
+            <li>{{item.premium_Collected}}</li>
+          </ul>
+        </td>
+        <td>{{item.bank_Name}}</td>
+        <td>{{item.branch_Code}}</td>
+        <td>{{item.bank_Branch_Name}}</td>
+        <td>{{item.to_Whom_Meet}}</td>
+        <td>{{item.to_Whom_Meet_Number}}</td>
+
+        <td>{{item.remark_Comments}}</td>
+      </tr>
+    </table>
+  </div>
+  <!-- This code only for download excel , end here -->
+</ion-content>

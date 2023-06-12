@@ -1,0 +1,48 @@
+<div class="popup-wrapper" [@fadein]>
+  <div class="popup-content-wrapper">
+    <ng-container *ngIf="popuptype == 'app-update'">
+      <h2 class="app-update-title">Application Update</h2>
+      <div class="app-update-wrapper">
+        <div class="app-update-image-container">
+          <img src="assets/undraw_update_re_swkp.svg" alt="" srcset="">
+        </div>
+        <h3>You have new application version available</h3>
+        <button type="button" class="app-update-button" (click)="update()">
+          <i class="fa fa-upload" aria-hidden="true"></i> Update Now
+        </button>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="popuptype == 'eapproval-success'">
+      <h2 class="app-update-title">Success</h2>
+      <div class="app-update-wrapper">
+        <div class="success-image-container">
+          <img
+            src="data:image/png;base64,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"
+            alt="" srcset="">
+        </div>
+        <h3>Your case is refered to underwriter successfully.</h3>
+        <h4>E-approval Number : <strong>{{eapprovalNo | uppercase}}</strong></h4>
+        <h4>Win Number : <strong>{{winNo | uppercase}}</strong></h4>
+        <button type="button" class="app-update-button" (click)="close()">
+          Okey
+        </button>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="popuptype == 'eapproval-failure'">
+      <h2 class="app-update-title">Application Update</h2>
+      <div class="app-update-wrapper">
+        <div class="app-update-image-container">
+          <img src="assets/undraw_update_re_swkp.svg" alt="" srcset="">
+        </div>
+        <h3>Your case is refered to underwriter successfully.</h3>
+        <h3>EApproval No :</h3>
+        <h3>Win No :</h3>
+        <button type="button" class="app-update-button">
+          <i class="fa fa-upload" aria-hidden="true"></i> Update Now
+        </button>
+      </div>
+    </ng-container>
+  </div>
+</div>

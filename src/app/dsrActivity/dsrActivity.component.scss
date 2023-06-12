@@ -1,0 +1,340 @@
+.mar-0 {
+    margin: 0;
+}
+
+.pad-0 {
+    padding: 0;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.header-title{
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    text-align: left !important;
+    padding-left: 2%;
+}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.form-card {
+    border-radius: 15px;
+    border-top: 5px solid var(--main-bg-color);
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.form-card {
+    background-color: rgb(255, 255, 255);
+}
+
+.login-title {
+    font-weight: bold;
+}
+
+
+.input-icon {
+    font-size: 1.5rem;
+    margin-top: 7px;
+}
+
+.icon-col {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-btn {
+    --color: var(--white-clr);
+    margin-top: 11%;
+}
+
+.form-lbl {
+    // margin-left: 3%;
+}
+
+.input {
+    border-bottom: 1px solid #e6e6e6 !important;
+    opacity: 1;
+    color: var(--black-clr);
+    font-family: inherit;
+    font-size: 15px;
+    width: 100%;
+    text-align: left;
+    // padding: 0rem 1.6rem 0rem 1.1rem;
+}
+
+.item-interactive {
+    --border-width: 0 0 0 0 !important;
+    --inner-border-width: 0;
+    --show-full-highlight: 0;
+    --show-inset-highlight: 0;
+}
+
+.add-icon {
+    font-size: 1.3rem;
+    color: #ffffff;
+    margin-right: 3%;
+}
+
+.filter-icon {
+    font-size: 1.3rem;
+    color: #06005f;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 14%;
+    display: block;
+}
+
+
+.fltr-btn {
+    margin: 9% 0% 6% 0%;
+    font-size: 18px;
+    color: var(--main-bg-color);
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.filter-close-icon {
+    float: right;
+    font-size: 1.5rem;
+    color: #a9a9a9;
+}
+
+.download-icon {
+    font-size: 1.5rem;
+    color: var(--white-clr);
+    margin-right: 3%;
+}
+
+// faq list css start here 
+
+.faq-list {
+    margin: 0% 0% 3% 0%;
+    border-radius: 5px;
+    border-top: 3px solid var(--main-bg-color);
+}
+
+.faq-list-data {
+    border: 1px solid #f4f5f8;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    margin-top: -1px;
+}
+
+.list-date {
+    font-size: 0.7rem;
+    color: var(--white-clr);
+    padding-bottom: 5px;
+}
+
+.list-lbl {
+    font-size: 1.0rem;
+    font-weight: 600;
+    padding-bottom: 5px;
+    color: var(--white-clr);
+}
+
+.detail-lbl {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding-bottom: 5px;
+    color: #343f5e;
+}
+
+table {
+    width: 100%;
+    border-bottom: 3px solid #58b900;
+}
+
+table tr td {
+    padding: 3% 2% 3% 2%;
+    font-size: 0.8rem;
+    border: 1px solid #91949c;
+    color: var(--black-clr);
+}
+
+.tbl-lbl {
+    width: 40%;
+}
+
+.tbl-val {
+    width: 60%;
+}
+
+ion-accordion {
+    margin: 0 auto;
+}
+
+
+.fix-searchbar {
+    // position: fixed;
+    width: 100%;
+    // z-index: 9;
+    background: var(--body-bg);
+    border-bottom: 1px solid #2424242f;
+}
+
+.sc-ion-searchbar-md-h {
+    --box-shadow: none !important;
+}
+
+
+.remove-icon {
+    font-size: 1.9rem;
+    color: red;
+    margin-left: auto;
+    // margin-right: auto;
+    display: block;
+}
+
+.subActivity {
+    border: 1px solid #e1e1e1;
+    border-radius: 5px;
+}
+
+.sub_activity {
+    margin-left: 12%;
+    padding: 0;
+}
+
+.sub_activity li {
+    padding: 5px;
+}
+
+form ion-item {
+    --background: var(--white-clr) !important;
+}
+
+ion-searchbar,
+ion-textarea {
+    color: var(--black-clr);
+}
+
+
+.empty-btn {
+    width: 55%;
+}
+
+
+.popover-row {
+    display: inline-block;
+}
+
+.popover-row ion-icon {
+    font-size: 1.1rem;
+}
+
+ion-popover ion-content ion-list {
+    background: rgb(255, 255, 255) ;
+}
+
+ion-popover ion-content ion-list ion-item {
+    --background: rgb(255, 255, 255) !important;
+}
+
+ion-popover ion-content ion-list ion-item span,
+ion-icon {
+    color: var(--black-clr);
+}
+
+.calander-icon {
+    position: absolute;
+    right: 7%;
+    float: right;
+    margin-top: 22%;
+    font-size: 14px;
+}
+
+.calander-input {
+    position: relative;
+    border-bottom: 1px solid rgb(214, 214, 214);
+    --padding-bottom: 2px;
+    font-size: 13px;
+    font-weight: bold;
+    margin-top: 9px;
+    width: 94%;
+}
+
+.dt-icon {
+    position: absolute;
+    right: 6%;
+    float: right;
+    margin-top: 12%;
+    font-size: 16px;
+}
+
+.time-icon {
+    position: absolute;
+    right: 10%;
+    float: right;
+    margin-top: 22%;
+    font-size: 16px;
+}
+
+.sub-time-icon {
+    position: absolute;
+    right: 11%;
+    float: right;
+    margin-top: 36%;
+    font-size: 17px;
+}
+
+.back-arrow {
+    font-size: 20px;
+    margin: 0px 0px -4px 0px;
+    color: white;
+}
+
+.sc-ion-buttons-md-s ion-button:not(.button-round) {
+    font-weight: bold !important;
+    --color: white !important;
+}
+
+.textarea {
+    width: 100%;
+    border: 1px solid lightgray;
+    overflow: auto;
+    background: var(--white-clr);
+    color: var(--black-clr);
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 10px 0px #f0f0f0;
+}
+
+textarea:focus {
+    outline: none;
+}
+
+
+
+.progress-inner {
+    min-width: 15%;
+    white-space: nowrap;
+    overflow: hidden;
+    padding: 2px;
+    border-radius: 10px;
+    background-color: var(--main-bg-color);
+    font-size: 12px;
+}
+
+
+// date clander start here 
+ion-modal {
+    --width: 320px;
+    --height: 400px;
+    --border-radius: 8px;
+  }
+  ion-modal ion-datetime {
+    height: 400px;
+  }

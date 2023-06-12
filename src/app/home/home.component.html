@@ -1,0 +1,89 @@
+<!-- <app-header [titleMsg]="titleMsg" [menuBtn]="true" [showBackButton]="false"></app-header> -->
+
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons  slot="start">
+      <ion-menu-button (ionWillOpen)="onMenuOpen()"></ion-menu-button>
+    </ion-buttons>
+    <ion-title class="bold">{{titleMsg}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <div class="progress-outer" *ngIf="progressBar"  >
+    <div class="progress-inner" [style.width]="progress + '%'">
+      {{ progress}}%
+    </div>
+  </div>
+
+  <ion-row>
+     <ion-col *ngIf="userFlag==1" size="12" size-md="6" size-lg="6">
+     <!-- <ion-col *ngIf="userFlag==1 || addAccess==Y" size="12" size-md="6" size-lg="6"> -->
+      <ion-card>
+        <div class="bg"><img class="center" src="./assets/New/w2.jpg"></div>
+        <ion-card-content routerLink="/dsrActivity">
+          <ion-row>
+            <ion-col size="3">
+              <img class="center" src="./assets/New/dsr.png">
+            </ion-col>
+            <ion-col size="9">
+              <p class="bold title center">DSR Activity</p>
+            </ion-col>
+          </ion-row>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+    
+    <ion-col size="12" size-md="6" size-lg="6" *ngIf="userFlag>1">
+      <ion-card>
+        <div class="bg"><img class="center" src="./assets/New/w2.jpg"></div>
+        <ion-card-content routerLink="/dashboard">
+          <ion-row>
+            <ion-col size="3">
+              <img class="center" src="./assets/New/dashboard.png">
+            </ion-col>
+            <ion-col size="9">
+              <p class="bold title center">Dashboard</p>
+            </ion-col>
+          </ion-row>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+
+    <ion-col *ngIf="userFlag>1" size="12" size-md="6" size-lg="6">
+      <ion-card>
+        <div class="bg"><img class="center" src="./assets/New/w2.jpg"></div>
+        <ion-card-content routerLink="/teamsDemo:id">
+          <ion-row>
+            <ion-col size="3">
+              <img class="center" src="./assets/New/teams.png">
+            </ion-col>
+            <ion-col size="9">
+              <p class="bold title center">Teams Activity</p>
+            </ion-col>
+          </ion-row>
+        </ion-card-content>
+      </ion-card>
+    </ion-col> 
+
+    <ion-col size="12" size-md="6" size-lg="6" *ngIf="userFlag>1">
+      <ion-card>
+        <div class="bg"><img class="center" src="./assets/New/w2.jpg"></div>
+        <ion-card-content routerLink="/report">
+          <ion-row>
+            <ion-col size="3">
+              <img class="center" src="./assets/New/reports.png">
+            </ion-col>
+            <ion-col size="9">
+              <p class="bold title center">Reports</p>
+            </ion-col>
+          </ion-row>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+
+  </ion-row>
+
+
+</ion-content>

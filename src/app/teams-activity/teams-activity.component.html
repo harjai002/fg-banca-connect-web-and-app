@@ -1,0 +1,104 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <div>
+        <ion-back-button defaultHref="/" mode="md"></ion-back-button>
+      </div>
+    </ion-buttons>
+    <ion-buttons [hidden]="true" slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title class="bold">{{titleMsg}}</ion-title>
+    <!-- <ion-icon class="filter-icon" (click)="filterOpen()" slot="end" name="funnel-outline"></ion-icon> -->
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+
+  <ion-breadcrumbs [maxItems]="4" (ionCollapsedClick)="presentPopover($event)">
+    <ion-breadcrumb href="#home">Home</ion-breadcrumb>
+    <ion-breadcrumb href="#electronics">Electronics</ion-breadcrumb>
+    <ion-breadcrumb href="#photography">Photography</ion-breadcrumb>
+    <ion-breadcrumb href="#cameras">Cameras</ion-breadcrumb>
+    <ion-breadcrumb href="#film">Film</ion-breadcrumb>
+    <ion-breadcrumb href="#35mm">35 mm</ion-breadcrumb>
+  </ion-breadcrumbs>
+  
+  <ion-popover #popover [isOpen]="isOpen" (didDismiss)="isOpen = false">
+    <ng-template>
+      <ion-content>
+        <ion-list>
+          <ion-item
+            *ngFor="let breadcrumb of collapsedBreadcrumbs; last as isLast"
+            [href]="breadcrumb.href"
+            [lines]="isLast ? 'none' : null"
+          >
+            <ion-label>{{ breadcrumb.textContent }}</ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ng-template>
+  </ion-popover>
+
+  <ion-card *ngIf="openFilter" class="mar-0">
+    <ion-card-content>
+      <form>
+        <ion-row>
+          <ion-col size="6" class="pad-0">
+            <ion-label class="form-lbl bold clr-black" position="floating">Start Date</ion-label>
+            <ion-input type="date"></ion-input>
+          </ion-col>
+          <ion-col size="6" class="pad-0">
+            <ion-label class="form-lbl bold clr-black" position="floating">End Date</ion-label>
+            <ion-input type="date"></ion-input>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col size="4" class="pad-0">
+            <ion-button color="danger" (click)="filterOpen()" class="fltr-btn bold center">Close</ion-button>
+          </ion-col>
+          <ion-col size="4" class="pad-0">
+            <ion-button color="warning" class="fltr-btn bold center">Clear</ion-button>
+          </ion-col>
+          <ion-col size="4" class="pad-0">
+            <ion-button color="success" class="fltr-btn bold center">Filter</ion-button>
+          </ion-col>
+        </ion-row>
+      </form>
+    </ion-card-content>
+  </ion-card>
+
+ 
+
+<!--<ion-grid class="pad-0">
+  <ion-card *ngFor="let item of teamsData; let i=index" (click)="goToTeamActivityDetail(item.userName)">
+    <ion-item>
+      <ion-label><span>{{i+1}}.</span>&nbsp; {{item.executive}}</ion-label>
+      <ion-badge color="warning" slot="end">{{item.Counts}}</ion-badge>
+    </ion-item>
+  </ion-card>
+</ion-grid>-->
+
+
+<ion-grid class="pad-0">
+  <ion-card *ngFor="let item of teamsData; let i=index" (click)="goToTeamActivityDetail(item)">
+    <ion-item>
+      <ion-label><span>{{i+1}}.</span>&nbsp; {{item.name}} <br>
+      <span style="margin-left: 11%; font-size: 11px; color:rgb(143 143 143);font-weight: normal;">Total Premium : {{item.sum ? (item.sum |currency: 'INR':'symbol':'1.0-0'):0}}</span></ion-label><br>
+      <ion-badge color="warning" slot="end">Total Counts : {{item.Count}}</ion-badge>
+    </ion-item>
+  </ion-card>
+</ion-grid> 
+
+
+
+<ng-container *ngIf="emptyRecord">
+  <div *ngIf="teamsData.length == 0">
+    <img class="center empty-img" src="./assets/New/empty.png">
+    <!-- <ion-button class="empty-btn center" (click)="AddDsrActivity()" size="small">Add Dsr Activity</ion-button> -->
+  </div>
+</ng-container>
+
+
+
+</ion-content>

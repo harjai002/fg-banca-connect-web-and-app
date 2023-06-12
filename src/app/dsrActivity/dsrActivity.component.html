@@ -1,0 +1,826 @@
+<ion-header>
+  <ion-toolbar>
+    <!-- <ion-buttons slot="start">
+      <div>
+        <ion-back-button defaultHref="/" mode="md"></ion-back-button>
+      </div>
+    </ion-buttons> -->
+    <ion-buttons [hidden]="true" slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title class="bold header-title">
+      <ion-icon class="back-arrow" (click)="backButton()" name="arrow-back-outline"></ion-icon>&nbsp;
+      {{titleMsg}} &nbsp; [{{filterData.length}}]
+    </ion-title>
+    <!-- <ion-icon class="download-icon" slot="end" (click)="excelExport('excel-table')" name="download-outline"></ion-icon> -->
+    <ion-icon class="add-icon" slot="end" routerLink="/home" name="home-outline"></ion-icon>
+    <ion-icon class="add-icon" slot="end" *ngIf="userFlag==1 || addAccess==Y" (click)="AddDsrActivity()" name="add-circle-outline">
+    </ion-icon>
+    <ion-icon class="add-icon" slot="end" (click)="searchIcon()" name="search-outline"></ion-icon>
+    <ion-icon class="add-icon" id="popover-button" slot="end" name="ellipsis-vertical-outline"></ion-icon>
+  </ion-toolbar>
+  <ion-row *ngIf="searchBar" class="fix-searchbar">
+    <ion-col class="pad-0">
+      <ion-searchbar [(ngModel)]="filterSearch"  animated="true" color="light" class="pad-0"
+        placeholder="search here">
+      </ion-searchbar>
+    </ion-col>
+    <!-- <ion-col size="2" class="pad-0">
+      <ion-icon class="filter-icon" (click)="searchIcon()" name="close-outline"></ion-icon>
+    </ion-col> -->
+  </ion-row>
+
+  <!-- filter start here -->
+  <ion-grid *ngIf="openFilter" style="background:white">
+    <ion-segment value="zone" [scrollable]="true" color="danger" (ionChange)="segmentChanged($event)">
+      <ion-segment-button [hidden]="userFlag<=1" value="manager">
+        <ion-label>Manager</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="zone">
+        <ion-label>Zone</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="bank">
+        <ion-label>Bank</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="activity">
+        <ion-label>Activity</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="date">
+        <ion-label>Date</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+    <ion-card class="mar-0" *ngIf="segmentValue == 'manager'">
+      <ion-card-content>
+        <ion-icon (click)="filterOpen()" style="float: right;font-size: 18px;" color="danger"
+          name="close-circle-outline"></ion-icon>
+        <form [formGroup]="managerForm">
+          <ion-row>
+            <ion-col size="12" class="pad-0">
+              <ion-label class="form-lbl bold clr-black" position="floating">Select Zone <span class="error"
+                  *ngIf="(managerForm.controls.zone.touched || submitted) && managerForm.controls.zone.errors?.required">
+                  *</span></ion-label>
+              <ion-select formControlName="zone" (ionChange)="chngeZone($event)" mode="ios" placeholder="Select Zone"
+                [multiple]="true">
+                <!-- <ion-select formControlName="zone"  mode="ios" placeholder="Select Zone" [multiple]="true"> -->
+                <ion-select-option *ngFor="let z of zoneData" value="{{z.zone}}">{{z.zone}}</ion-select-option>
+              </ion-select>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12" class="pad-0">
+              <ion-label class="form-lbl bold clr-black" position="floating">Select Manager <span class="error"
+                  *ngIf="(managerForm.controls.manager.touched || submitted) && managerForm.controls.manager.errors?.required">
+                  *</span></ion-label>
+              <ion-select [disabled]="managerForm.controls.zone.invalid" formControlName="manager"
+                (ionChange)="chngeManagers($event)" placeholder="Select Manager" [multiple]="true" mode="ios">
+                <ion-select-option value="{{item.id}}" *ngFor="let item of managerData">{{item.name}}
+                </ion-select-option>
+              </ion-select>
+            </ion-col>
+          </ion-row>
+        </form>
+      </ion-card-content>
+      <ion-badge style="float: right;padding: 6px;margin: 6px;" (click)="clearManagerFilter()" color="danger">Clear
+        Filter</ion-badge>
+    </ion-card>
+
+    <div
+      *ngIf="segmentValue == 'zone' || segmentValue == 'bank' || segmentValue == 'activity' || segmentValue == 'date' ">
+      <form [formGroup]="filterForm">
+        <ion-card class="mar-0" *ngIf="segmentValue == 'zone'">
+          <ion-card-content>
+            <ion-row>
+              <ion-col size="12" class="pad-0">
+                <ion-label class="form-lbl bold clr-black" position="floating">Select Zone</ion-label>
+                <!-- <ion-select formControlName="zone" (ionChange)="chngeZone($event)" mode="ios" placeholder="Select Zone" [multiple]="true"> -->
+                <ion-select formControlName="zone" mode="ios" placeholder="Select Zone" [multiple]="true">
+                  <ion-select-option *ngFor="let z of zoneData" value="{{z.zone}}">{{z.zone}}</ion-select-option>
+                </ion-select>
+              </ion-col>
+            </ion-row>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-card class="mar-0" *ngIf="segmentValue == 'bank'">
+          <ion-card-content>
+            <ion-row>
+              <ion-col size="12" class="pad-0">
+                <ion-item>
+                  <ion-label class="clr-black">Bank Name </ion-label>
+                  <!-- itemValueField="id" -->
+                  <ionic-selectable formControlName="bank" itemValueField="bank_Name" item-content [(ngModel)]="bank"
+                    [items]="banks" itemTextField="bank_Name" [canSearch]="true" [isMultiple]="true" [canClear]="true"
+                    [hasVirtualScroll]="true" [hasInfiniteScroll]="true" [shouldFocusSearchbar]="false">
+                  </ionic-selectable>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-card class="mar-0" *ngIf="segmentValue == 'activity'">
+          <ion-card-content>
+            <ion-row>
+              <ion-col size="12" class="pad-0">
+                <ion-label class="form-lbl bold clr-black" position="floating">Select activity</ion-label>
+                <ion-select formControlName="activity" placeholder="Select Type of Activity" [multiple]="true"
+                  mode="ios">
+                  <div>
+                    <ion-select-option value="Bank Branch visit">Bank Branch visit</ion-select-option>
+                    <ion-select-option value="Bank Zonal office">Bank Zonal office</ion-select-option>
+                    <ion-select-option value="Bank Regional office">Bank Regional office</ion-select-option>
+                    <ion-select-option value="Customer service">Customer service</ion-select-option>
+                    <ion-select-option value="Promotional activity">Promotional activity</ion-select-option>
+                    <ion-select-option value="Joint call with supevisor">Joint call with supevisor</ion-select-option>
+                    <ion-select-option value="Review/Office Meeting">Review/Office meeting</ion-select-option>
+                    <ion-select-option value="Corporate salary">Corporate salary</ion-select-option>
+                    <ion-select-option value="Policy Issuance/Other Back office work">Policy issuance/Other Back office
+                      work</ion-select-option>
+                  </div>
+                </ion-select>
+              </ion-col>
+            </ion-row>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-card class="mar-0" *ngIf="segmentValue == 'date'">
+          <ion-card-content>
+            <ion-row>
+              <ion-col size="6" class="pad-0">
+                <ion-label class="form-lbl bold clr-black" position="floating">Start Date</ion-label>
+                <!-- <ion-icon class="calander-icon " name="calendar-outline"></ion-icon> -->
+                <ion-input class="calander-input" formControlName="startDate" type="date"></ion-input>
+              </ion-col>
+              <ion-col size="6" class="pad-0">
+                <ion-label class="form-lbl bold clr-black" position="floating">End Date</ion-label>
+                <!-- <ion-icon class="calander-icon " name="calendar-outline"></ion-icon> -->
+                <ion-input class="calander-input" formControlName="endDate" type="date"></ion-input>
+              </ion-col>
+            </ion-row>
+          </ion-card-content>
+        </ion-card>
+        <ion-row>
+          <ion-col size="4" class="pad-0">
+            <ion-label color="danger" (click)="filterClose()" class="fltr-btn center">Close</ion-label>
+          </ion-col>
+          <ion-col size="4" class="pad-0">
+            <ion-label color="warning" [disabled]="true" (click)="clearFilterForm()" class="fltr-btn center">Clear
+            </ion-label>
+          </ion-col>
+          <ion-col size="4" class="pad-0">
+            <ion-label color="success" [disabled]="true" (click)="applyFilters()" class="fltr-btn center">Apply
+            </ion-label>
+          </ion-col>
+        </ion-row>
+      </form>
+    </div>
+
+  </ion-grid>
+  <!-- folter end here -->
+
+</ion-header>
+<ion-content [scrollEvents]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingIcon="arrow-down" pullingText="Pull to refresh" refreshingSpinner="bubbles"
+      refreshingText="Refreshing..."></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="progress-outer" *ngIf="progressBar"  >
+    <div class="progress-inner" [style.width]="progress + '%'">
+      {{ progress}}%
+    </div>
+  </div>
+
+  <!-- <ion-card *ngIf="openFilter" class="mar-0">
+    <ion-card-content>
+      <form [formGroup]="filterForm">
+        <ion-row>
+          <ion-col size="6" class="pad-0">
+            <ion-label class="form-lbl bold clr-black" position="floating">Start Date</ion-label>
+            <ion-icon class="calander-icon" name="calendar-outline"></ion-icon>
+            <ion-input class="calander-input" formControlName="startDate" type="date"></ion-input>
+            <span class="error"
+              *ngIf="(filterForm.controls.startDate.touched || submitted) && filterForm.controls.startDate.errors?.required">
+              Start Date is required</span>
+          </ion-col>
+          <ion-col size="6" class="pad-0">
+            <ion-label class="form-lbl bold clr-black" position="floating">End Date</ion-label>
+            <ion-icon class="calander-icon " name="calendar-outline"></ion-icon>
+            <ion-input class="calander-input" formControlName="endDate" type="date"></ion-input>
+            <span class="error"
+              *ngIf="(filterForm.controls.endDate.touched || submitted) && filterForm.controls.endDate.errors?.required">
+              Start Date is required</span>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col size="4" class="pad-0">
+            <ion-button color="danger" (click)="filterOpen()" class="fltr-btn bold center">Close</ion-button>
+          </ion-col>
+          <ion-col size="4" class="pad-0">
+            <ion-button color="warning" (click)="ClearFltr()" class="fltr-btn bold center">Clear</ion-button>
+          </ion-col>
+          <ion-col size="4" class="pad-0">
+            <ion-button color="success" (click)="filterSubmit()" class="fltr-btn bold center">Filter</ion-button>
+          </ion-col>
+        </ion-row>
+
+      </form>
+    </ion-card-content>
+  </ion-card> -->
+
+  <!-- <ion-row *ngIf="searchBar" class="fix-searchbar">
+    <ion-col class="pad-0">
+      <ion-searchbar [(ngModel)]="filterSearch" class="pad-0" placeholder="bank name, branch code, activity ">
+      </ion-searchbar>
+    </ion-col>
+    <ion-col size="2" class="pad-0">
+      <ion-icon class="filter-icon" (click)="searchIcon()" name="close-outline"></ion-icon>
+    </ion-col>
+  </ion-row> -->
+
+  <ion-grid *ngIf="dsrDetails">
+    <ion-accordion-group>
+      <ion-accordion class="faq-list" mode="ios" *ngFor="let item of filterData | filterdata:filterSearch; let i=index"
+        value="{{i}}">
+        <ion-item slot="header">
+          <ion-row>
+            <ion-col size="12">
+              <ion-label class="list-lbl">{{item.type_Of_Activity | titlecase}}</ion-label>
+              <ion-label class="list-date">{{item.date_Of_Visit | date: 'dd/MM/yyyy'}} | <span>
+                  {{item.zone | titlecase}} | {{item.bank_Name | titlecase}}</span>
+              </ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-item>
+        <div class="faq-list-data" slot="content">
+          <table>
+            <tr>
+              <td class="tbl-lbl">Executive</td>
+              <td>{{item.executive | titlecase}}</td>
+            </tr>
+            <tr>
+              <td>Team Leader</td>
+              <td>{{item.team_Leader}}</td>
+            </tr>
+            <tr>
+              <td>Date of visit</td>
+              <td>{{item.date_Of_Visit | date: 'dd/MM/yyyy'}}</td>
+            </tr>
+            <tr>
+              <td>Start Time</td>
+              <td>{{item.start_Time}}</td>
+            </tr>
+            <tr>
+              <td>End Time</td>
+              <td>{{item.end_Time}}</td>
+            </tr>
+            <tr>
+              <td>Duration</td>
+              <td>{{item.duration}} HH:MM</td>
+            </tr>
+            <tr>
+              <td>Type of Activity</td>
+              <td>{{item.type_Of_Activity | titlecase}}</td>
+            </tr>
+            <ng-container *ngIf="item?.subTypeOfActivity.length > 0">
+              <tr *ngFor="let subItem of item?.subTypeOfActivity">
+                <td>
+                  <ul class="sub_activity">
+                    <li>Sub Type of Activity</li>
+                    <li>Start Time</li>
+                    <li>End Time</li>
+                    <li>Duration</li>
+                    <li>Premium Collected Including GST</li>
+                  </ul>
+                </td>
+                <td>
+                  <ul class="sub_activity">
+                    <li>{{subItem?.subTypeOfActivity | titlecase}}</li>
+                    <li>{{subItem?.subStartTime}}</li>
+                    <li>{{subItem?.subEndTime}}</li>
+                    <li>{{subItem?.subDuration}} HH:MM</li>
+                    <li>{{subItem ?.premium_Collected ? (subItem ?.premium_Collected |currency:
+                      'INR':'symbol':'1.0-0'):0}}</li>
+                  </ul>
+                </td>
+              </tr>
+            </ng-container>
+            <tr>
+              <td>Bank Name</td>
+              <td>{{item.bank_Name | titlecase}}</td>
+            </tr>
+            <tr>
+              <td>Branch Code</td>
+              <td>{{item.branch_Code}}</td>
+            </tr>
+            <tr>
+              <td>Bank Branch name</td>
+              <td>{{item.bank_Branch_Name | titlecase}}</td>
+            </tr>
+            <tr>
+              <td>Person Meet</td>
+              <td>{{item.to_Whom_Meet | titlecase}}</td>
+            </tr>
+            <tr>
+              <td>Contact Number</td>
+              <td>{{item.to_Whom_Meet_Number}}</td>
+            </tr>
+            <tr>
+              <td>Other Remark Comments</td>
+              <td>{{item.remark_Comments | titlecase}}</td>
+            </tr>
+          </table>
+        </div>
+      </ion-accordion>
+    </ion-accordion-group>
+  </ion-grid>
+
+  <ion-grid *ngIf="dsrActivityAdd" class="pad-0">
+    <ion-row class="form-row">
+      <ion-col>
+        <ion-card class="form-card pad-0 mar-0">
+          <ion-card-header>
+            <ion-card-title class="login-title center clr-black">DSR Activity
+              <ion-icon (click)="closeAddActivity()" style="float: right;color: red;"
+                name="close-circle-outline"></ion-icon>
+            </ion-card-title>
+          </ion-card-header>
+
+          <ion-card-content style="padding: 6px;">
+            <form [formGroup]="drsFrom">
+              <div [hidden]="true">
+                <ion-row>
+                  <ion-col size="12">
+                    <ion-label class="form-lbl clr-black">Executive</ion-label>
+                    <ion-input class="input" formControlName="executive" clearInput readonly placeholder="Executive">
+                    </ion-input>
+                    <span class="error"
+                      *ngIf="(drsFrom.controls.executive.touched || submitted) && drsFrom.controls.executive.errors?.required">
+                      Executive is required</span>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col size="12">
+                    <ion-label class="form-lbl clr-black">Team Leader</ion-label>
+                    <ion-input class="input" placeholder="Team Leader" formControlName="team_Leader"></ion-input>
+                  </ion-col>
+                </ion-row>
+
+                <ion-row>
+                  <ion-col size="12">
+                    <ion-label class="form-lbl clr-black">User Role</ion-label>
+                    <ion-input class="input" formControlName="auth_role"></ion-input>
+                  </ion-col>
+                </ion-row>
+
+                <ion-row>
+                  <ion-col size="12">
+                    <ion-label class="form-lbl clr-black">User Name</ion-label>
+                    <ion-input class="input" formControlName="userName"></ion-input>
+                  </ion-col>
+                </ion-row>
+
+                <ion-row>
+                  <ion-col size="12">
+                    <ion-label class="form-lbl clr-black">Zone</ion-label>
+                    <ion-input class="input" formControlName="zone" type="text"></ion-input>
+                  </ion-col>
+                </ion-row>
+              </div>
+              <ion-row>
+                <ion-col size="12">
+                 
+                  <ion-list class="calendar" style="padding: 0;">
+                    <ion-item id="open-modal2" style="margin-left: -17px;border-bottom: 1px solid #e4dddd;">
+                      <ion-label style="color:rgb(21, 20, 20);">Date of visit</ion-label>
+                      <ion-note style="color:rgb(16, 15, 15);font-size: 14px;" slot="end">{{clanderDate ? (clanderDate | date ): 'MM/DD/YYYY' }}</ion-note>
+                    </ion-item>
+                    <ion-modal trigger="open-modal2" [cssClass]="'bottom-end'">
+                      <ng-template>
+                        <ion-datetime presentation="date" displayFormat="YYYY-MM-DD"
+                          (ionChange)="dateClanderChange($event)" size="cover" [showDefaultButtons]="true"
+                          min="{{minDate}}" max='{{maxDate}}' formControlName="date_Of_Visit"></ion-datetime>
+                      </ng-template> </ion-modal>
+                  </ion-list>
+                  
+                  <span class="error"
+                    *ngIf="(drsFrom.controls.date_Of_Visit.touched || submitted) && drsFrom.controls.date_Of_Visit.errors?.required">Date is required</span>
+                </ion-col>
+              </ion-row>
+              <!-- <p>{{d}}</p> -->
+              <!-- min='{{minDate}}' -->
+              <ion-row>
+                <ion-col size="6">
+                  <ion-label class="form-lbl clr-black">Start Time
+                  </ion-label>
+                  <!-- <ion-icon class="time-icon extra-icon" name="time-outline"></ion-icon> -->
+                  <ion-input (change)="startTimeChange($event)" class="input calander-input"
+                    formControlName="start_Time" type="time"></ion-input>
+                  <span class="error"
+                    *ngIf="(drsFrom.controls.start_Time.touched || submitted) && drsFrom.controls.start_Time.errors?.required">Start
+                    time is required</span>
+                </ion-col>
+                <ion-col size="6">
+                  <ion-label class="form-lbl clr-black">End Time
+                  </ion-label>
+                  <!-- <ion-icon class="time-icon extra-icon" name="time-outline"></ion-icon> -->
+                  <ion-input (change)="endTimeChange($event)" class="input calander-input" formControlName="end_Time"
+                    type="time" [disabled]="end_Time_picker">
+                  </ion-input>
+                  <span class="error"
+                    *ngIf="(drsFrom.controls.end_Time.touched || submitted) && drsFrom.controls.end_Time.errors?.required">End
+                    time is required</span>
+                </ion-col>
+              </ion-row>
+
+              <ion-row>
+                <ion-col size="12">
+                  <ion-label class="form-lbl clr-black">Duration </ion-label>
+                  <ion-input class="input" placeholder="Time Duration" formControlName="duration" value="{{Duration}}"
+                    readonly>
+                  </ion-input>
+                  <span class="error"
+                    *ngIf="(drsFrom.controls.duration.touched || submitted) && drsFrom.controls.duration.errors?.required">
+                    Duration is required</span>
+                </ion-col>
+              </ion-row>
+
+              <ion-row>
+                <ion-col size="12">
+                  <ion-label class="form-lbl clr-black">Type of Activity
+                  </ion-label>
+                  <ion-select class="input" style="padding-left:5px" (ionChange)="checkSpaicelChar($event)" formControlName="type_Of_Activity"
+                    placeholder="Select Type of Activity" mode="ios">
+                    <div>
+                      <ion-select-option value="Bank Branch visit">Bank Branch visit</ion-select-option>
+                      <ion-select-option value="Bank Zonal office">Bank Zonal office</ion-select-option>
+                      <ion-select-option value="Bank Regional office">Bank Regional office</ion-select-option>
+                      <ion-select-option value="Customer service">Customer service</ion-select-option>
+                      <ion-select-option value="Promotional activity">Promotional activity</ion-select-option>
+                      <ion-select-option value="Joint call with supevisor">Joint call with supevisor</ion-select-option>
+                      <ion-select-option value="Review/Office Meeting">Review/Office meeting</ion-select-option>
+                      <ion-select-option value="Corporate salary">Corporate salary</ion-select-option>
+                      <ion-select-option value="Policy Issuance/Other Back office work">Policy issuance/Other Back
+                        office
+                        work</ion-select-option>
+                    </div>
+                  </ion-select>
+                  <span class="error"
+                    *ngIf="(drsFrom.controls.type_Of_Activity.touched || submitted) && drsFrom.controls.type_Of_Activity.errors?.required">Type
+                    of Activity is required</span>
+
+                </ion-col>
+              </ion-row>
+              <br>
+              <ion-row class="subActivity" formArrayName="subTypeOfActivity">
+                <ion-col size="12">
+                  <ion-row *ngFor="let activity of subTypeOfActivity().controls;let i=index" [formGroupName]="i"
+                    style="margin-bottom: 5%;">
+                    <ion-col size="10">
+                      <ion-label class="form-lbl clr-black">Sub Type of Activity </ion-label>
+                      <ion-select class="input" (ionChange)="checkSpaicelChar($event)"
+                        formControlName="subTypeOfActivity" placeholder="Select Type of Activity" mode="ios">
+                        <div>
+                          <ion-select-option value="New Premium Collection">New Premium Collection</ion-select-option>
+                          <ion-select-option value="Renewal Premium">Renewal Premium</ion-select-option>
+                          <ion-select-option value="Cross-sell"> Cross-sell</ion-select-option>
+                          <ion-select-option value="Business Planning Discussion"> Business Planning Discussion
+                          </ion-select-option>
+                        </div>
+                      </ion-select>
+
+                      <span class="error" *ngIf="(newSubTypeOfActivity().controls.subTypeOfActivity.touched || 
+                      submitted) && newSubTypeOfActivity().controls.subTypeOfActivity.errors?.required ||
+                      newSubTypeOfActivity().controls.subTypeOfActivity.dirty">Sub Type of activity is required</span>
+                    </ion-col>
+                    <ion-col size="2">
+                      <ion-icon class="remove-icon" (click)="removeSubTypeActivity(i)" name="close-circle-outline">
+                      </ion-icon>
+                    </ion-col>
+                    <ion-col size="4">
+                      <ion-label class="form-lbl clr-black">Start Time
+                      </ion-label>
+                      <!-- <ion-icon class="sub-time-icon extra-icon" name="time-outline"></ion-icon> -->
+                      <ion-input (change)="substartTimeChange($event)" class="input calander-input"
+                        formControlName="subStartTime" type="time">
+                      </ion-input>
+                      <span class="error" *ngIf="(newSubTypeOfActivity().controls.subStartTime.touched || 
+                        submitted) && newSubTypeOfActivity().controls.subStartTime.errors?.required">Start time is
+                        required</span>
+                    </ion-col>
+                    <ion-col size="4">
+                      <ion-label class="form-lbl clr-black">End Time </ion-label>
+                      <!-- <ion-icon class="sub-time-icon extra-icon" name="time-outline"></ion-icon> -->
+                      <ion-input (change)="subendTimeChange($event,activity)" class="input calander-input"
+                        formControlName="subEndTime" type="time">
+                      </ion-input>
+                      <span class="error" *ngIf="(newSubTypeOfActivity().controls.subEndTime.touched || 
+                        submitted) && newSubTypeOfActivity().controls.subEndTime.errors?.required">End time is
+                        required</span>
+                    </ion-col>
+                    <ion-col size="4">
+                      <ion-label class="form-lbl clr-black">Duration </ion-label>
+                      <ion-input class="input" formControlName="subDuration" readonly> </ion-input>
+                      <span class="error" *ngIf="(newSubTypeOfActivity().controls.subDuration.touched || 
+                        submitted) && newSubTypeOfActivity().controls.subDuration.errors?.required">Duration is
+                        required</span>
+                    </ion-col>
+                    <ion-col size="12">
+                      <ion-label class="form-lbl clr-black">Premium Collected Including GST
+                      </ion-label>
+                      <ion-input type="number" formControlName="premium_Collected"
+                        (ionChange)="checkSpaicelChar($event)" class="input" clearInput placeholder="Premium Collected"
+                        ondrop="return false;" onpaste="return false;"></ion-input>
+                      <span class="error" *ngIf="(newSubTypeOfActivity().controls.premium_Collected.touched || 
+                      submitted) && newSubTypeOfActivity().controls.premium_Collected.errors?.required">Premium
+                        Collected is required</span>
+
+                    </ion-col>
+                  </ion-row>
+
+                  <ion-row>
+                    <ion-col size="8">
+                      <ion-label class="form-lbl clr-black">Add Sub Type of Activity</ion-label>
+                    </ion-col>
+                    <ion-col size="4">
+                      <ion-label (click)="addSubTypeOfActivity()" class="bold" style="float: right;" color="success">Add
+                        New +
+                      </ion-label>
+                    </ion-col>
+                  </ion-row>
+                </ion-col>
+              </ion-row>
+              <br>
+
+              <ion-row>
+                <ion-col size="12">
+                  <ion-item class="input" style="--padding-start:0px;" (click)="bankLoad()">
+                    <ion-label class="clr-black">Bank Name
+                    </ion-label>
+                    <!-- itemValueField="id" -->
+                    <ionic-selectable formControlName="bank_Name" item-content [(ngModel)]="bank" [items]="banks"
+                      itemTextField="bank_Name" (onChange)="bankNameChange($event)" [canSearch]="true"
+                      [isMultiple]="false" [canClear]="true" [hasVirtualScroll]="true" [hasInfiniteScroll]="true"
+                      [shouldBackDropClose]="false" [shouldFocusSearchbar]="false">
+                    </ionic-selectable>
+                  </ion-item>
+
+                  <span class="error"
+                    *ngIf="(drsFrom.controls.bank_Name.touched || submitted) && drsFrom.controls.bank_Name.errors?.required">Bank
+                    Name is required</span>
+                </ion-col>
+              </ion-row>
+
+              <ion-row>
+                <ion-col size="12">
+                  <ion-item class="input" (click)="bankBranchClick()" style="--padding-start:0px;" [disabled]="drsFrom.controls.bank_Name.invalid">
+                    <ion-label class="clr-black">Bank Branch Name
+                    </ion-label>
+                    <!-- itemValueField="id" -->
+                    <ionic-selectable formControlName="bank_Branch_Name" item-content [(ngModel)]="branchName"
+                      [items]="branchNames" itemTextField="bank_Branch_Name" (onChange)="bankBranchNameChange($event)"
+                      [canSearch]="true" [isMultiple]="false" [canClear]="true" [hasVirtualScroll]="true"
+                      [hasInfiniteScroll]="true" [shouldFocusSearchbar]="false">
+                    </ionic-selectable>
+                  </ion-item>
+
+                  <span class="error"
+                    *ngIf="(drsFrom.controls.bank_Branch_Name.touched || submitted) && drsFrom.controls.bank_Branch_Name.errors?.required">Bank
+                    Branch Name is required</span>
+                </ion-col>
+              </ion-row>
+
+              <ion-row>
+                <ion-col size="12">
+                  <ion-label class="form-lbl clr-black">Branch code</ion-label>
+                  <ion-input formControlName="branch_Code" (ionChange)="checkSpaicelChar($event)"
+                    value="{{bankBranchCode}}" readonly class="input" placeholder="Branch code" ondrop="return false;"
+                    onpaste="return false;">
+                  </ion-input>
+                  <span class="error"
+                    *ngIf="(drsFrom.controls.branch_Code.touched || submitted) && drsFrom.controls.branch_Code.errors?.required">Branch
+                    Code is required</span>
+
+                </ion-col>
+              </ion-row>
+
+              <!-- <ion-row>
+                <ion-col size="12">
+                  <ion-label class="form-lbl bold clr-black">Bank Branch name</ion-label>
+                  <ion-input formControlName="bank_Branch_Name" class="input" clearInput placeholder="Bank Branch name">
+                  </ion-input>
+                </ion-col>
+              </ion-row> -->
+
+              <!-- <ion-row>
+                <ion-col size="12">
+                  <ion-label class="form-lbl bold clr-black">Mode of Transport</ion-label>
+                  <ion-select formControlName="mode_Of_Transport" placeholder="Plz Select Mode of Transport">
+                    <div>
+                      <ion-select-option value="Bus">Bus</ion-select-option>
+                      <ion-select-option value="Train">Train</ion-select-option>
+                      <ion-select-option value=" Two wheeler"> Two wheeler</ion-select-option>
+                      <ion-select-option value="Four wheelers">Four wheelers</ion-select-option>
+                      <ion-select-option value="Auto rickshaw">Auto rickshaw</ion-select-option>
+                    </div>
+                  </ion-select>
+                </ion-col>
+              </ion-row>
+
+              <ion-row>
+                <ion-col size="12">
+                  <ion-label class="form-lbl bold clr-black">Travel From</ion-label>
+                  <ion-input formControlName="travel_From" class="input" clearInput placeholder="Travel From">
+                  </ion-input>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="12">
+                  <ion-label class="form-lbl bold clr-black">Travel To</ion-label>
+                  <ion-input formControlName="travel_To" class="input" clearInput placeholder="Travel To"></ion-input>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="12">
+                  <ion-label class="form-lbl bold clr-black">Kilometers Travelled</ion-label>
+                  <ion-input formControlName="kilometers_Travelled" class="input" clearInput
+                    placeholder="Kilometers Travelled"></ion-input>
+                </ion-col>
+              </ion-row> -->
+
+              <ion-row>
+                <ion-col size="12">
+                  <ion-label class="form-lbl clr-black">Person meet
+                  </ion-label>
+                  <ion-input formControlName="to_Whom_Meet" (ionChange)="checkSpaicelChar($event)" class="input"
+                    clearInput placeholder="He/She" onPaste="return false" onCopy="return false"
+                    onCut="return false"></ion-input>
+                  <span class="error"
+                    *ngIf="(drsFrom.controls.to_Whom_Meet.touched || submitted) && drsFrom.controls.to_Whom_Meet.errors?.required">Person
+                    meet is required</span>
+                </ion-col>
+              </ion-row>
+
+              <ion-row>
+                <ion-col size="12">
+                  <ion-label class="form-lbl clr-black">Contact number </ion-label>
+                  <ion-input formControlName="to_Whom_Meet_Number" (ionChange)="checkSpaicelChar($event)" class="input" onKeyPress="if(this.value.length==10) return false;"
+                    clearInput type="number" placeholder="99********" onPaste="return false" onCopy="return false"
+                    onCut="return false" inputmode="numeric"></ion-input>
+                  <span style="font-size:11px;color: red;"
+                    *ngIf="drsFrom.controls.to_Whom_Meet_Number.errors?.pattern">Please Enter 10 digit
+                    mobile number
+                  </span>
+                  <span class="error"
+                    *ngIf="(drsFrom.controls.to_Whom_Meet_Number.touched || submitted) && drsFrom.controls.to_Whom_Meet_Number.errors?.required">Mobile
+                    number is required</span>
+                    <p>{{text}}</p>
+                </ion-col>
+              </ion-row>
+              <br>
+              <ion-row>
+                <ion-col size="12">
+                  <ion-label class="form-lbl clr-black">Other Remark Comments</ion-label>
+                  <textarea class="textarea input" rows="4" formControlName="remark_Comments"
+                    placeholder="Other remark comments...." onPaste="return false" onCopy="return false"
+                    onCut="return false"></textarea>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <!-- [disabled]="drsFrom.invalid" -->
+                  <ion-button (click)="onSubmit()" class="login-btn bold center">SUBMIT
+                    &nbsp; <ion-icon style="color: white;" name="arrow-forward-outline"></ion-icon>
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </form>
+          </ion-card-content>
+        </ion-card>
+
+
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+  <!-- This code only for download excel , start here -->
+  <div id="excel-table" style="display: none;">
+    <tr>
+      <th>Executive</th>
+      <th>Team Leader</th>
+      <th>Date of visit</th>
+      <th>Start Time</th>
+      <th>End Time</th>
+      <th>Duration</th>
+      <th>Type of Activity</th>
+      <ul class="sub_activity">
+        <li>Sub Type of Activity</li>
+        <li>Start Time</li>
+        <li>End Time</li>
+        <li>Duration</li>
+        <li>Premium Collected Including GST</li>
+      </ul>
+      <th>Bank Name</th>
+      <th>Branch Code</th>
+      <th>Bank Branch name</th>
+      <th>Person Meet</th>
+      <th>Contact Number</th>
+      <th>Other Remark Comments</th>
+    </tr>
+    <table *ngFor="let item of filterData | filterdata:filterSearch; let i=index">
+      <tr>
+        <td>{{item.executive}}</td>
+        <td>{{item.team_Leader}}</td>
+        <td>{{item.date_Of_Visit}}</td>
+        <td>{{item.start_Time}}</td>
+        <td>{{item.end_Time}}</td>
+        <td>{{item.duration}}</td>
+        <td>{{item.type_Of_Activity}}</td>
+
+        <td *ngFor="let subItem of item.subTypeOfActivity">
+          <ul class="sub_activity">
+            <li>{{subItem.subTypeOfActivity}}</li>
+            <li>{{subItem.subStartTime}}</li>
+            <li>{{subItem.subEndTime}}</li>
+            <li>{{subItem.subDuration}}</li>
+            <li>{{item.premium_Collected ? (item.premium_Collected |currency: 'INR':'symbol':'1.0-0'):0}}</li>
+          </ul>
+        </td>
+        <td>{{item.bank_Name}}</td>
+        <td>{{item.branch_Code}}</td>
+        <td>{{item.bank_Branch_Name}}</td>
+        <td>{{item.to_Whom_Meet}}</td>
+        <td>{{item.to_Whom_Meet_Number}}</td>
+
+        <td>{{item.remark_Comments}}</td>
+      </tr>
+    </table>
+  </div>
+  <!-- This code only for download excel , end here -->
+
+  <!-- if dsr avtivity is empty  -->
+  <ng-container *ngIf="emptyRecord">
+    <div *ngIf="filterData.length == 0">
+      <img class="center empty-img" src="./assets/New/empty.svg">
+      <h3 class="recordfound">No Record Found !</h3><br>
+      <!-- <ion-button class="empty-btn center" *ngIf="userFlag==1" (click)="AddDsrActivity()" size="small">Add Dsr Activity
+      </ion-button> -->
+    </div>
+  </ng-container>
+
+
+
+
+  <ion-popover trigger="popover-button" [dismissOnSelect]="true" mode="ios">
+    <ng-template>
+      <ion-content>
+        <ion-list>
+          <ion-item [button]="true" (click)="filterOpen()" [detail]="false">
+            <ion-row class="popover-row">
+              <ion-col size="3">
+                <ion-icon name="funnel-outline"></ion-icon>
+              </ion-col>
+              <ion-col><span>Filter</span></ion-col>
+            </ion-row>
+          </ion-item>
+          <!-- <ion-item [button]="true" (click)="filterOpen()" [detail]="false">
+            <ion-row class="popover-row">
+              <ion-col size="3">
+                <ion-icon name="calendar-number-outline"></ion-icon>
+              </ion-col>
+              <ion-col><span>Find By Date</span></ion-col>
+            </ion-row>
+          </ion-item> -->
+          <!-- <ion-item [button]="true" (click)="excelExport('excel-table')" 
+            [hidden]="filterData.length == 0" [detail]="false">
+            <ion-row class="popover-row">
+              <ion-col size="3">
+                <ion-icon name="download-outline"></ion-icon>
+              </ion-col>
+              <ion-col><span>Download</span></ion-col>
+            </ion-row>
+          </ion-item> -->
+        </ion-list>
+      </ion-content>
+    </ng-template>
+  </ion-popover>
+
+</ion-content>
+<ng-container *ngIf="PremiumFooter">
+  <ion-footer *ngIf="totalPremium">
+    <ion-toolbar>
+      <ion-row>
+        <!-- <ion-col size="9">
+          <ion-title style="font-size:12px">Total Premium :</ion-title>
+        </ion-col> -->
+        <ion-col size="12">
+          <p class="center" style="font-size:15px;color: white;margin: 0;"><b>
+              Total Premium : {{totalPremium ? (totalPremium |currency: 'INR':'symbol':'1.0-0'):0}}</b></p>
+        </ion-col>
+      </ion-row>
+    </ion-toolbar>
+  </ion-footer>
+</ng-container>

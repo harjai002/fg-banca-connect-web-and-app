@@ -1,0 +1,92 @@
+<!-- <app-header [showBackButton]="false" [showMenu]="false"></app-header> -->
+<ion-content [scrollEvents]="true">
+
+  <div class="progress-outer" *ngIf="progressBar"  >
+    <div class="progress-inner" [style.width]="progress + '%'">
+      {{ progress}}%
+    </div>
+  </div>
+  <ion-grid class="pad-0">
+    <div class="parent">
+      <ion-row class="ion-align-items-center child">
+        <ion-col size="12" size-md="6" size-lg="6">
+          <!-- <img class="logo-img center" src="../../../assets/New/login1.png" alt="login banner"> -->
+          <img class="logo-img center" src="./assets/New/login1.png" alt="login banner">
+        </ion-col>
+        <ion-col size="12" size-md="6" size-lg="6">
+
+          <ion-card class="form-card login-form">
+            <ion-card-header>
+              <ion-card-title class="login-title clr-black">LOGIN</ion-card-title>
+            </ion-card-header>
+
+            <ion-card-content>
+              <form [formGroup]="loginForm">
+                <ion-row>
+                  <ion-col class="icon-col pad-0" size="1">
+                    <ion-icon class="input-icon" name="mail-outline"></ion-icon>
+                  </ion-col>
+                  <ion-col class="pad-0" size="11">
+                    <ion-label class="form-lbl clr-black"
+                      [ngStyle]="{'color':loginForm.controls.userName.invalid ? 'red':'green'}" position="floating">User
+                      Name
+                    </ion-label>
+                    <div class="inputs">
+                      <ion-input #input1 (keyup.enter)="login()" enterkeyhint="go" formControlName="userName"
+                        placeholder="Username" ondrop="return false;" onpaste="return false;"></ion-input>
+                      <img class="align-check" [hidden]="loginForm.controls.userName.invalid"
+                        src="./assets/icon/check mark.png">
+                      <!-- <img class="align-check" [hidden]="loginForm.controls.Uname.valid" src="assets/icon/error.png"> -->
+                    </div>
+                  </ion-col>
+                </ion-row>
+                <br>
+           
+                <ion-row>
+                  <ion-col class="icon-col pad-0" size="1">
+                    <ion-icon class="input-icon" name="lock-closed-outline"></ion-icon>
+                  </ion-col>
+                  <ion-col class="pad-0" size="11">
+                    <ion-label class="form-lbl clr-black"
+                      [ngStyle]="{'color':loginForm.controls.password.invalid ? 'red':'green'}" position="floating">
+                      Password</ion-label>
+                    <div class="inputs">
+                      <ion-input #input2 (keyup.enter)="login()" enterkeyhint="go" placeholder="Password"
+                        formControlName="password" [type]="showPassword ?'text': 'password'" ondrop="return false;" onpaste="return false;">
+                      </ion-input>
+                      <ion-icon class="align-check eyebtn clr-black" style="z-index:99;" (click)="togglepassword()"
+                        [name]="passwordtoggleicon"></ion-icon>
+                    </div>
+                  </ion-col>
+                </ion-row>
+                <!-- <ion-row>
+                <ion-col>
+                  <ion-label class="forget-lbl bold clr-black pointer">Forgot Password?</ion-label>
+                </ion-col>
+              </ion-row> -->
+                <br><br>
+                <ion-row>
+                  <ion-col>
+                    <ion-button (click)="login()" *ngIf="loginBtn"   [disabled]="loginForm.invalid"
+                      class="login-btn bold center">SIGN IN
+                    </ion-button>
+                  </ion-col>
+                </ion-row>
+              </form>
+            </ion-card-content>
+          </ion-card>
+          <ion-row style="display:none ;">
+            <ion-col>
+              <p class="signup bold clr-black">Don't have an account ? <a href="" (click)="registerLink()"
+                  class="pointer">&nbsp;Sign Up</a> </p>
+            </ion-col>
+          </ion-row>
+
+        </ion-col>
+      </ion-row>
+    </div>
+  </ion-grid>
+
+
+
+</ion-content>

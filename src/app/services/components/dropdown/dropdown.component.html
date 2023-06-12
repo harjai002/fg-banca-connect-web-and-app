@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="light" (click)="cancel()">Cancel</ion-button>
+    </ion-buttons>
+    <ion-title>Welcome</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="light" (click)="confirm()">Done</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-searchbar style="padding: 0;" placeholder="Search "></ion-searchbar>
+</ion-header>
+<ion-content class="ion-padding">
+  
+  <ion-item *ngFor="let d of data">
+    <ion-checkbox id="{{d.id}}" value="{{d.name}}"  (ionChange)="onTermsChanged($event)" [checked]="canDismiss"></ion-checkbox>
+    &nbsp;<ion-label class="ion-text-wrap" for="terms">{{d.name}}</ion-label>
+  </ion-item>
+
+
+  
+
+</ion-content>

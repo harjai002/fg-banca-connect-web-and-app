@@ -1,0 +1,84 @@
+ 
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <!-- <div>
+        <ion-back-button (click)="backButton()" mode="md"></ion-back-button>
+      </div> -->
+      <ion-icon  class="backButton" (click)="backButton()" name="arrow-back-outline"></ion-icon>
+    </ion-buttons>
+    <ion-buttons [hidden]="true" slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title class="bold">{{titleMsg}}</ion-title>
+    <!-- <ion-icon class="filter-icon" (click)="filterOpen()" slot="end" name="funnel-outline"></ion-icon> -->
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+
+ 
+
+  <ion-card *ngIf="openFilter" class="mar-0">
+    <ion-card-content>
+      <form>
+        <ion-row>
+          <ion-col size="6" class="pad-0">
+            <ion-label class="form-lbl bold clr-black" position="floating">Start Date</ion-label>
+            <ion-input type="date"></ion-input>
+          </ion-col>
+          <ion-col size="6" class="pad-0">
+            <ion-label class="form-lbl bold clr-black" position="floating">End Date</ion-label>
+            <ion-input type="date"></ion-input>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col size="4" class="pad-0">
+            <ion-button color="danger" (click)="filterOpen()" class="fltr-btn bold center">Close</ion-button>
+          </ion-col>
+          <ion-col size="4" class="pad-0">
+            <ion-button color="warning" class="fltr-btn bold center">Clear</ion-button>
+          </ion-col>
+          <ion-col size="4" class="pad-0">
+            <ion-button color="success" class="fltr-btn bold center">Filter</ion-button>
+          </ion-col>
+        </ion-row>
+      </form>
+    </ion-card-content>
+  </ion-card>
+
+ 
+
+<!--<ion-grid class="pad-0">
+  <ion-card *ngFor="let item of teamsData; let i=index" (click)="goToTeamActivityDetail(item.userName)">
+    <ion-item>
+      <ion-label><span>{{i+1}}.</span>&nbsp; {{item.executive}}</ion-label>
+      <ion-badge color="warning" slot="end">{{item.Counts}}</ion-badge>
+    </ion-item>
+  </ion-card>
+</ion-grid>-->
+
+
+<ion-grid class="pad-0">
+  <ion-card *ngFor="let item of teamsData; let i=index" (click)="getTeamsLeadersApi(item)">
+    <ion-item>
+      <ion-label><span>{{i+1}}.</span>&nbsp; {{item.name | titlecase}}<br>
+      <span style="font-size: 11px; color:rgb(255, 255, 255);font-weight: normal;">Total Premium : {{item.sum ?  (item.sum |currency: 'INR':'symbol':'1.0-0'):0}}</span></ion-label><br>
+      <ion-badge color="warning" slot="end">Till Date Dsr Counts : {{item.Count}}</ion-badge>
+    </ion-item>
+  </ion-card>
+</ion-grid>
+
+
+
+<ng-container *ngIf="emptyRecord">
+  <div *ngIf="teamsData.length == 0">
+    <img class="center empty-img" src="./assets/New/empty.svg">
+    <h3 class="recordfound">No Record Found !</h3>
+    <!-- <ion-button class="empty-btn center" (click)="AddDsrActivity()" size="small">Add Dsr Activity</ion-button> -->
+  </div>
+</ng-container>
+
+
+
+</ion-content>
