@@ -14,8 +14,7 @@
     </ion-title>
     <!-- <ion-icon class="download-icon" slot="end" (click)="excelExport('excel-table')" name="download-outline"></ion-icon> -->
     <ion-icon class="add-icon" slot="end" routerLink="/home" name="home-outline"></ion-icon>
-    <ion-icon class="add-icon" slot="end" *ngIf="userFlag==1 || addAccess==Y" (click)="AddDsrActivity()" name="add-circle-outline">
-    </ion-icon>
+    <ion-icon class="add-icon" slot="end" *ngIf="userFlag==1 || addAccess==Y && activityCount==1" (click)="AddDsrActivity()" name="add-circle-outline"></ion-icon>
     <ion-icon class="add-icon" slot="end" (click)="searchIcon()" name="search-outline"></ion-icon>
     <ion-icon class="add-icon" id="popover-button" slot="end" name="ellipsis-vertical-outline"></ion-icon>
   </ion-toolbar>
@@ -401,7 +400,7 @@
                       <ng-template>
                         <ion-datetime presentation="date" displayFormat="YYYY-MM-DD"
                           (ionChange)="dateClanderChange($event)" size="cover" [showDefaultButtons]="true"
-                          min="{{minDate}}" max='{{maxDate}}' formControlName="date_Of_Visit"></ion-datetime>
+                          min="{{minDate}}" max='{{maxDate}}'  formControlName="date_Of_Visit"></ion-datetime>
                       </ng-template> </ion-modal>
                   </ion-list>
                   

@@ -12,7 +12,8 @@ import { MenuController } from '@ionic/angular';
 })
 export class TokenInterceptorService implements HttpInterceptor {
 
-  constructor(private injector: Injector,private router: Router, private loderService: LoderService,
+  constructor(private injector: Injector,private router: Router, 
+    private loderService: LoderService,
     public toastService: ToastService,
     public menuCtrl: MenuController,
     ) { }
@@ -31,6 +32,7 @@ export class TokenInterceptorService implements HttpInterceptor {
       catchError((err, caught) => {
         if (sessionStorage.authData) {
           if (err.status === 401) {
+            this.loderService.loaderStatus.next(false);
             this.toastService.toast("Session expired or invalid");
             sessionStorage.removeItem("Token");
             sessionStorage.removeItem("authData");

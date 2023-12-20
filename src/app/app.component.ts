@@ -108,7 +108,7 @@ export class AppComponent {
       this.networkCheckService.ngOnInit();
 
       this.statusBar.styleDefault();
-      this.splashScreen.hide();
+      this.splashScreen.show();
       this.statusBar.overlaysWebView(false);
       this.statusBar.backgroundColorByHexString("#c21b17")
 

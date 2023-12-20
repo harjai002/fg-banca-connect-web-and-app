@@ -72,7 +72,6 @@
     "cordova-plugin-ionic-webview": "^5.0.0",
     "cordova-plugin-network-information": "^3.0.0",
     "cordova-plugin-proguard": "^2.2.0",
-    "cordova-plugin-splashscreen": "5.0.2",
     "cordova-plugin-statusbar": "^2.4.2",
     "eslint": "^7.6.0",
     "eslint-plugin-import": "2.22.1",
@@ -96,7 +95,6 @@
       "cordova-plugin-network-information": {},
       "cordova-plugin-statusbar": {},
       "cordova-plugin-device": {},
-      "cordova-plugin-splashscreen": {},
       "cordova-plugin-ionic-webview": {},
       "cordova-plugin-ionic-keyboard": {},
       "cordova-plugin-app-version": {},
@@ -107,7 +105,6 @@
       "cordova-plugin-inappbrowser": {}
     },
     "platforms": [
-      "android",
       "browser"
     ]
   }

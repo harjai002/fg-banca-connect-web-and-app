@@ -12,8 +12,9 @@
 
 --------------------------------------------------------
 URLs
-1. https://tinyurl.com/fgBancaConnect // apk url
+1. https://tinyurl.com/fgBancaConnect // apk url version 1.0.1
 2. https://online.futuregenerali.in/TeamTrack/Web // web url
+3. https://online.futuregenerali.in/DSR/FgBancaConnectMain.zip  server apk zip url
 --------------------------------------------------------
 Angular CLI: 			    14.2.10
 Node: 					    16.17.0
@@ -35,3 +36,8 @@ Package                         Version
 
 ----------------------------------------------------------
 
+21 apk zip
+team track
+ 58 DB
+ dsrappversion table name
+ 34 web url

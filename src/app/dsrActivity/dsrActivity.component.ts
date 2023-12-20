@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, Validators, FormBuilder, FormControl, FormArray } from '@angular/forms';
-import { PopoverController } from '@ionic/angular';
+import { AlertController, PopoverController } from '@ionic/angular';
 import * as moment from 'moment';
 import { DataService } from '../services/data.service';
 import { ExcelexportService } from '../services/excelexport.service';
@@ -65,7 +65,10 @@ export class DsrActivityComponent implements OnInit {
   minDate;
   maxDate;
   zoneData: any;
-  clanderDate:Date;
+  clanderDate: Date;
+  todayActivityCount: any = 0;
+  yestActivityCount: any = 0;
+  isBlockedDate: any;
 
 
   constructor(
@@ -78,6 +81,7 @@ export class DsrActivityComponent implements OnInit {
     private route: ActivatedRoute,
     private authanticationSer: AuthenticationService,
     public router: Router,
+    public alertController: AlertController
   ) {
   }
 
@@ -87,7 +91,7 @@ export class DsrActivityComponent implements OnInit {
     this.getBanks();
     this.getDSRActivityData();
     this.getTotalPremium();
-    this.minMaxDate();
+
     this.drsFrom = this.fb.group({
       executive: ['', Validators.required],
       team_Leader: [''],
@@ -109,7 +113,7 @@ export class DsrActivityComponent implements OnInit {
       // kilometers_Travelled: [''],
       // to_Whom_Meet: ['',Validators.compose([Validators.pattern("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9  !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~€£¥₩])(?=.*?[A-Z 0-9]).{8,}$"), Validators.required])],
       to_Whom_Meet: ['', Validators.required],
-      to_Whom_Meet_Number: ['', [Validators.required, Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$"),Validators.maxLength(10)]],
+      to_Whom_Meet_Number: ['', [Validators.required, Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$"), Validators.maxLength(10)]],
       remark_Comments: ['']
     });
 
@@ -129,9 +133,9 @@ export class DsrActivityComponent implements OnInit {
   }
 
 
-  dateClanderChange(e:any){
-    this.clanderDate=e.target.value;
-    console.log("date change ",this.clanderDate);
+  dateClanderChange(e: any) {
+    this.clanderDate = e.target.value;
+    console.log("date change ", this.clanderDate);
   }
 
   bankLoad() {
@@ -168,8 +172,8 @@ export class DsrActivityComponent implements OnInit {
       if (res.ResponseFlag == 1) {
         this.loderService.dismiss();
         this.branchNames = JSON.parse(res.ResponseMessage).Table;
-        this.checkSpaicelChar(event);
         // console.log("branch name", this.branchNames);
+        this.checkSpaicelChar(event);
       } else {
         this.loderService.dismiss();
         console.log("bank branch name not found");
@@ -349,16 +353,45 @@ export class DsrActivityComponent implements OnInit {
   }
 
   getDSRActivityData() {
-
+    this.todayActivityCount = 0;
+    this.yestActivityCount = 0;
     // console.log("id from url", this.userEmpCode);
     let loadingParams = { msg: 'Please Wait...', spinner: 'lines-sharp-small', mode: 'ios', class: 'custom-loading', backdropDismiss: true }
-    this.loderService.showLoading(loadingParams);
+    // this.loderService.showLoading(loadingParams);
+
+    this.loderService.loaderStatus.next(true);
+
     this.commonService.post('getDSRdtls', { userName: this.userEmpCode }).subscribe((res) => {
-      this.loderService.dismiss();
+      // this.loderService.dismiss();
+      this.loderService.loaderStatus.next(false);
       if (res.ResponseFlag == 1) {
-        
         let data = JSON.parse(res.ResponseMessage).Table;
         for (let i = 0; i < data.length; i++) {
+
+
+
+
+
+
+          var today = new Date();
+          var todayDate = moment(today).format('YYYY-MM-DD');
+          var yest = new Date(today.setDate(today.getDate() - 1))
+          var yesterday = moment(yest).format('YYYY-MM-DD');
+          // console.log("yesterday", yesterday)
+          let date_Of_Visit = data[i].date_Of_Visit;
+          var time2 = moment(date_Of_Visit).format('YYYY-MM-DD');
+          // console.log("date_Of_Visit", time2)
+          const todayIsSame = moment(todayDate).isSame(moment(time2));
+          const yestIsSame = moment(yesterday).isSame(moment(time2));
+          // console.log("todayIsSame", todayIsSame);
+          // console.log("yestIsSame", yestIsSame);
+
+          if (todayIsSame == true) { this.todayActivityCount += 1; }
+          if (yestIsSame == true) { this.yestActivityCount += 1; }
+
+
+
+
           if (data[i].subTypeOfActivity.length > 10) {
             data[i].subTypeOfActivity = JSON.parse(data[i].subTypeOfActivity);
             // console.log("sub data", data[i].subTypeOfActivity);
@@ -367,13 +400,17 @@ export class DsrActivityComponent implements OnInit {
           }
         }
         this.filterData = data;
+        console.log("TCount", this.todayActivityCount);
+        console.log("YCount", this.yestActivityCount);
         // console.log("dsr data", this.filterData);
       } else {
-        this.loderService.dismiss();
+        // this.loderService.dismiss();
+        this.loderService.loaderStatus.next(false);
       }
     }, (err) => {
       console.log(err, "error");
-      this.loderService.dismiss();
+      // this.loderService.dismiss();
+      this.loderService.loaderStatus.next(false);
     })
   }
 
@@ -477,30 +514,43 @@ export class DsrActivityComponent implements OnInit {
   }
 
   AddDsrActivity() {
+    const limit = 6; // Daily activity count limit
     // this.userData = this.authanticationSer.getSession('authData');
-    const get = this.authanticationSer.getSession('authData');
-    this.userData = JSON.parse(atob(get));
+    console.log("count", this.todayActivityCount, this.yestActivityCount);
+    if (this.todayActivityCount == limit && this.yestActivityCount == limit) {
+      this.alerts("Your activity limit has been reached.  you cannot do more than SIX activities in a day", "Warnning");
+    } else if (this.todayActivityCount > limit && this.yestActivityCount > limit) {
+      this.PremiumFooter = false;
+      this.dsrActivityAdd = false;
+      this.dsrDetails = true;
+      this.openFilter = false;
+      this.searchBar = false;
+      this.alerts("Your activity limit has been reached.  you cannot do more than SIX activities in a day", "Warnning");
+    }
+    else {
+      const get = this.authanticationSer.getSession('authData');
+      this.userData = JSON.parse(atob(get));
 
+      this.userFlag = this.userData.flag;
+      this.authTl = this.userData.ReportingManager1Empcode;
+      this.ExecutiveName = this.userData.EmpName;
+      this.userEmpCode = this.userData.EmpCode;
+      this.userZone = this.userData.zone;
 
-    this.userFlag = this.userData.flag;
-    this.authTl = this.userData.ReportingManager1Empcode;
-    this.ExecutiveName = this.userData.EmpName;
-    this.userEmpCode = this.userData.EmpCode;
-    this.userZone = this.userData.zone;
-    // console.log("authData", this.userData);
+      this.drsFrom.get('executive').setValue(this.ExecutiveName);
+      this.drsFrom.get('team_Leader').setValue(this.authTl);
+      this.drsFrom.get('auth_role').setValue(this.userFlag);
+      this.drsFrom.get('userName').setValue(this.userEmpCode);
+      this.drsFrom.get('zone').setValue(this.userZone);
 
-    this.drsFrom.get('executive').setValue(this.ExecutiveName);
-    this.drsFrom.get('team_Leader').setValue(this.authTl);
-    this.drsFrom.get('auth_role').setValue(this.userFlag);
-    this.drsFrom.get('userName').setValue(this.userEmpCode);
-    this.drsFrom.get('zone').setValue(this.userZone);
-
-    this.PremiumFooter = false;
-    this.dsrActivityAdd = true;
-    this.dsrDetails = !this.dsrDetails;
-    this.openFilter = false;
-    this.searchBar = false;
-    this.emptyRecord = !this.emptyRecord;
+      this.PremiumFooter = false;
+      this.dsrActivityAdd = true;
+      this.dsrDetails = !this.dsrDetails;
+      this.openFilter = false;
+      this.searchBar = false;
+      this.emptyRecord = !this.emptyRecord;
+      this.minMaxDate();
+    }
   }
   closeAddActivity() {
     this.dsrDetails = true;
@@ -517,7 +567,7 @@ export class DsrActivityComponent implements OnInit {
     let obj = this.drsFrom.value;
     obj.bank_Name = obj.bank_Name?.bank_Name;
     obj.bank_Branch_Name = obj.bank_Branch_Name?.bank_Branch_Name;
-    console.log("add data",obj);
+    console.log("add data", obj);
     if (this.drsFrom.valid) {
       this.commonService.post('addDSRdtls', obj).subscribe(res => {
         this.getTotalPremium();
@@ -564,13 +614,75 @@ export class DsrActivityComponent implements OnInit {
   }
 
   minMaxDate() {
+    const limit = 6; // Daily activity count limit
     var date = new Date();
     var datestrings = (date.getFullYear()) + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2);
     this.maxDate = datestrings;
-    var tempDate = new Date(date.setDate(date.getDate() - 1));
-    var minDateString = (tempDate.getFullYear()) + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + tempDate.getDate()).slice(-2);
-    this.minDate = minDateString;
+    this.minDate = this.maxDate;
+
+    // set minimum date base on yesturday Activity Count
+    if (this.yestActivityCount == limit && this.todayActivityCount == limit) {
+      this.alerts("Your today's activity limit has been reached.  you cannot do more than SIX activities in a day", "Warnning")
+    } else {
+
+      if (this.todayActivityCount >= limit && this.yestActivityCount < limit) {
+        console.log('yesturday count is less then', limit)
+        var tempDate = new Date(date.setDate(date.getDate() - 1));
+        var minDateString = (tempDate.getFullYear()) + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + tempDate.getDate()).slice(-2);
+        this.minDate = minDateString;
+        this.maxDate = minDateString;
+
+        // new add///
+        if (this.todayActivityCount == limit) {
+          this.alerts("Your today's activity limit has been reached.  you cannot do more than SIX activities in a day", "Warnning")
+        }
+
+      }
+
+      else if (this.todayActivityCount < limit && this.yestActivityCount >= limit) {
+        console.log('today count is less then', limit)
+        var tempDate = new Date(date.setDate(date.getDate() - 0));
+        var minDateString = (tempDate.getFullYear()) + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + tempDate.getDate()).slice(-2);
+        this.minDate = minDateString;
+
+
+        // new add///
+        if (this.yestActivityCount == limit) {
+          this.alerts("Your yesterday's activity limit has been reached.  you cannot do more than SIX activities in a day", "Warnning")
+        }
+
+
+
+
+      } else if (this.todayActivityCount > limit || this.yestActivityCount > limit) {
+        this.PremiumFooter = false;
+        this.dsrActivityAdd = false;
+        this.dsrDetails = true;
+        this.openFilter = false;
+        this.searchBar = false;
+        this.alerts("Your today's activity limit has been reached.  you cannot do more than SIX activities in a day", "Warnning");
+        console.log('Your activity are grater then', limit)
+      }
+      else {
+        var tempDate = new Date(date.setDate(date.getDate() - 1));
+        var minDateString = (tempDate.getFullYear()) + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + tempDate.getDate()).slice(-2);
+        this.minDate = minDateString;
+        this.maxDate = datestrings;
+
+        this.PremiumFooter = false;
+        this.dsrActivityAdd = true;
+        this.dsrDetails = false;
+        this.openFilter = false;
+        this.searchBar = false;
+        console.log('Your yesturday and today activity are less then then', limit)
+      }
+
+    }
+
+
+
   }
+
   clearFilterForm() {
     this.filterForm.reset();
     this.getDSRActivityData();
@@ -648,8 +760,22 @@ export class DsrActivityComponent implements OnInit {
     }
   }
 
+  async alerts(msg, header) {
+    const alert = await this.alertController.create({
+      header: header,
+      message: msg,
+      mode: 'ios',
+      backdropDismiss: false,
+      buttons: [
+        {
+          text: 'OK',
+          handler: () => {
+          }
+        }]
+    });
+    await alert.present();
+  }
 
-  
   backButton() {
     history.back();
   }

@@ -19,7 +19,6 @@ export class FilterdataPipe implements PipeTransform {
 
   transform(value: any, searchText: any): any {
     if (searchText === undefined) return value;
-
     return value.filter(function (search) {
       return search.type_Of_Activity.toLowerCase().indexOf(searchText.toLowerCase()) > -1 || search.bank_Name.toLowerCase().indexOf(searchText.toLowerCase()) > -1 || search.to_Whom_Meet.toLowerCase().indexOf(searchText.toLowerCase()) > -1  || search.bank_Branch_Name.toLowerCase().indexOf(searchText.toLowerCase()) > -1  || search.executive.toLowerCase().indexOf(searchText.toLowerCase()) > -1  || search.zone.toLowerCase().indexOf(searchText.toLowerCase()) > -1 || search.branch_Code.toLowerCase().indexOf(searchText.toLowerCase()) > -1 || search.to_Whom_Meet_Number.toLowerCase().indexOf(searchText.toLowerCase()) > -1 || search.userName.toLowerCase().indexOf(searchText.toLowerCase()) > -1 || search.team_Leader.toLowerCase().indexOf(searchText.toLowerCase()) > -1;
     })

@@ -112,7 +112,7 @@ export class HomeComponent implements OnInit {
               // console.log("api version", version);
               if (this.appVersionNumber != version[0].Version) {
                 if (this.platform.is('ios')) {
-                  console.log("ios version i avilable");
+                  console.log("ios version is avilable");
                 } else {
                   this.appUpdateConfirm();
                 }
@@ -192,6 +192,7 @@ export class HomeComponent implements OnInit {
     const installedVersion = (await ApkUpdater.getInstalledVersion());
     console.log("versions", installedVersion);
     await ApkUpdater.download('https://online.futuregenerali.in/DSR/FgBancaConnectMain.zip', {
+      // https://online.futuregenerali.in/DSR/FgBancaConnectMain.zip
       onDownloadProgress: (e) => {
         this._zone.run(() => {
           this.progress = e?.progress ?? 0;
