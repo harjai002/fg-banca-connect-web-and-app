@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { ToastService } from '../../services/components/toast.service';
 import { LogindataService } from '../../services/logindata.service';
 import { AuthService } from '../../services/auth.service';
-import { MenuController, AlertController } from '@ionic/angular';
+import { MenuController, AlertController, ToastController } from '@ionic/angular';
 import { SharedDataService } from 'src/app/services/shared-data.service';
 import { LoderService } from 'src/app/services/components/loder.service';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
@@ -56,7 +56,7 @@ export class LoginComponent implements OnInit {
     private platform: Platform,
     private appVersion: AppVersion,
     public alertController: AlertController,
-    private cookieService: CookieService,
+    private toastController: ToastController,
     // for download apk file
     private file: File,
     private fileTransfer: FileTransfer,
@@ -79,17 +79,17 @@ export class LoginComponent implements OnInit {
     this.loginForm.get('password').setValue('');
     this.togglepassword();
     this.menuCtrl.enable(false);
+
+    var c = this.getCookie('userCookie');
+    if (c) {
+      var cookieData = JSON.parse(atob(c));
+      this.loginForm.get('userName').setValue(cookieData.userName ? cookieData.userName : '');
+      this.loginForm.get('password').setValue(cookieData.password ? cookieData.password : '');
+    }
+
   }
 
 
-  getCookie() {
-    var cookieName = 'HelloWorld';
-    var cookieValue = 'HelloWorld';
-    var myDate = new Date();
-    myDate.setMonth(myDate.getMonth() + 12);
-    document.cookie = cookieName + "=" + cookieValue + ";expires=" + myDate
-      + ";domain=.example.com;path=/";
-  }
 
   login() {
     let loadingParams = { msg: 'Please Wait...', spinner: 'lines-sharp-small', mode: 'ios', class: 'custom-loading', backdropDismiss: true }
@@ -111,6 +111,14 @@ export class LoginComponent implements OnInit {
 
           this.authanticationSer.setSession('Token', data.Token);
           this.authanticationSer.setSession('authData', b64Str);
+
+          var c = this.getCookie('userCookie');
+          if (c) {
+            console.log("Cookie already exits", c);
+          }
+          else {
+            this.cookiesToast(formData);
+          }
 
           this.router.navigate(['/home']);
           this.menuCtrl.enable(true);
@@ -137,6 +145,58 @@ export class LoginComponent implements OnInit {
       this.showPassword = true;
     }
   }
+
+
+
+  async cookiesToast(formData: any) {
+    const toast = await this.toastController.create({
+      message: ' Are you sure you want to save cookies.',
+      position: 'bottom',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+          handler: () => {
+            console.log('toast cancel');
+          },
+        },
+        {
+          text: 'Accept',
+          role: 'confirm',
+          handler: () => {
+            console.log('toast accept');
+            let data = { userName: formData.userName, password: formData.password };
+            const stringifyObj = JSON.stringify(data)
+            const b64Str = btoa(stringifyObj)
+            this.setCookie("userCookie", b64Str, 1);
+          },
+        },
+      ]
+    });
+
+    await toast.present();
+  }
+
+
+  setCookie(name: string, value: any, expires?: number): void {
+    let cookieString = `${name}=${value}`;
+    if (expires) {
+      const expirationDate = new Date(Date.now() + expires * 24 * 60 * 60 * 1000);
+      cookieString += `;expires=${expirationDate.toUTCString()}`;
+    }
+    document.cookie = cookieString;
+  }
+
+  getCookie(name: string): string | null {
+    const cookies = document.cookie.split(';').map(cookie => cookie.trim());
+    const foundCookie = cookies.find(cookie => cookie.startsWith(name + '='));
+    return foundCookie ? foundCookie.split('=')[1] : null;
+  }
+
+  deleteCookie(name: string): void {
+    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+  }
+
 
   deviceReady() {
     this.platform.ready().then(() => {
