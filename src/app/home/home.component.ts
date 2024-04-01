@@ -191,6 +191,7 @@ export class HomeComponent implements OnInit {
   async update() {
     const installedVersion = (await ApkUpdater.getInstalledVersion());
     console.log("versions", installedVersion);
+    // apk file path on serve
     await ApkUpdater.download('https://online.futuregenerali.in/DSR/FgBancaConnectMain.zip', {
       // https://online.futuregenerali.in/DSR/FgBancaConnectMain.zip
       onDownloadProgress: (e) => {
